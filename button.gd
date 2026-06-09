@@ -1,11 +1,14 @@
 extends Button
-
+# EXPORTS Y MODULOS
 @export var dep: int = 0;
 @onready var TextBox = $"../Seed"
 
+# SEÑALES
 signal World(Generated);
 
+# MAQUINAS
 var rng = RandomNumberGenerator.new()
+var ruido = FastNoiseLite.new()
 
 var locaciones = [
 	{"nombre": "building",		"peso": 50, "loot": 60, "limite": 5},
@@ -45,13 +48,34 @@ func _pressed() -> void:
 	var _World = {};
 	var presupuesto = limites[2]["peso"];
 	
-	var _Seed = TextBox.text
-	rng.seed = _Seed.hash()
+	var _Seed = TextBox.text.hash()
+	rng.seed = _Seed
+	ruido.seed = _Seed
+	ruido.noise_type = FastNoiseLite.TYPE_PERLIN
+	ruido.frequency = 0.08
+	
+	Mapa_Calor(30, 20)
 	
 	_World = Generate_World(presupuesto);
 	World.emit(_World);	
-
 	
+
+func Mapa_Calor(ancho: int, alto: int):
+	if dep == 1: print("\nGENERACION MAPA DE CALOR TERMINADA -----------------");
+	
+	for y in range(alto):
+		var fila = ""
+		for x in range(ancho):
+			var valor = ruido.get_noise_2d(x, y)
+			
+			if valor > 0.3:
+				fila += "██"
+			elif valor > 0.0:
+				fila += "▒▒"
+			else:
+				fila += ".."
+		print(fila)
+
 func Generate_World(presupuesto) -> Dictionary:
 	var _Final = {};
 	var Locaciones_Temp = Generate_Item(presupuesto, locaciones);
