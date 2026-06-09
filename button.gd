@@ -1,8 +1,11 @@
 extends Button
 
 @export var dep: int = 0;
+@onready var TextBox = $"../Seed"
 
 signal World(Generated);
+
+var rng = RandomNumberGenerator.new()
 
 var locaciones = [
 	{"nombre": "building",		"peso": 50, "loot": 60, "limite": 5},
@@ -42,9 +45,13 @@ func _pressed() -> void:
 	var _World = {};
 	var presupuesto = limites[2]["peso"];
 	
+	var _Seed = TextBox.text
+	rng.seed = _Seed.hash()
+	
 	_World = Generate_World(presupuesto);
 	World.emit(_World);	
 
+	
 func Generate_World(presupuesto) -> Dictionary:
 	var _Final = {};
 	var Locaciones_Temp = Generate_Item(presupuesto, locaciones);
@@ -64,13 +71,12 @@ func Generate_World(presupuesto) -> Dictionary:
 func Generate_Item(presupuesto: int, lista: Array) -> Array:
 	var pesoTotal = 0;
 	var _Seleccion = [];
-	@warning_ignore("unused_variable")
 	
 	for i in range(lista.size()):
 		pesoTotal += lista[i]["peso"];
 	
 	while presupuesto > 0:
-		var tirada = randi_range(1, pesoTotal); 
+		var tirada = rng.randi_range(1, pesoTotal); 
 		var locacionTemporal = {};
 		
 		for loc in lista:

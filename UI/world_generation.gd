@@ -3,7 +3,7 @@ extends Control
 @export var loc_Card_Scene: PackedScene
 
 @onready var grid = $GridContainer
-@onready var button = $generator
+@onready var button = $generator/HBoxContainer/Button
 
 func _ready() -> void:
 	button.World.connect(_on_mundo_generado)

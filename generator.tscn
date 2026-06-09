@@ -3,8 +3,24 @@
 [ext_resource type="Texture2D" uid="uid://dkexdtgumg6fq" path="res://icon.svg" id="1_62e2m"]
 [ext_resource type="Script" uid="uid://d2i5tfl8cm1wa" path="res://button.gd" id="2_qtu10"]
 
-[node name="generator" type="Button" unique_id=1254918329]
-offset_right = 136.0
+[node name="generator" type="Control" unique_id=1573440576]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=523646731]
+layout_mode = 0
+offset_right = 480.0
 offset_bottom = 136.0
+
+[node name="Seed" type="TextEdit" parent="HBoxContainer" unique_id=849287091]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+placeholder_text = "Semilla"
+
+[node name="Button" type="Button" parent="HBoxContainer" unique_id=1254918329]
+layout_mode = 2
 icon = ExtResource("1_62e2m")
 script = ExtResource("2_qtu10")
