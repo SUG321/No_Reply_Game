@@ -5,7 +5,7 @@ extends RefCounted
 static var rng = RandomNumberGenerator.new()
 static var ruido = FastNoiseLite.new()
 
-static var dep = 2
+static var dep = 0
 static var mapa = {}
 static var tamC3D = 4
 
@@ -34,7 +34,9 @@ static func Generate(Seed: String, world: Node3D) -> Dictionary:
 
 static func Generate_Map(ancho: int, alto: int):
 	mapa.clear()
+	# DEPURACION ---------------------------------------------
 	if dep>= 2: print("\n...INIT GEN MAPA")
+	# FDEP --------------------------------------------------- 
 	
 	for y in range(alto):
 		var fila = ""
@@ -45,13 +47,16 @@ static func Generate_Map(ancho: int, alto: int):
 			
 			if valor > 0.3:
 				prespCelda = 80
-				icono = "██"
+				# DEPURACION ---------------------------------------------
+				if dep >= 2: icono = "██"
 			elif valor > 0.0:
 				prespCelda = 30
-				icono += "▒▒"
+				# DEPURACION ---------------------------------------------
+				if dep >= 2: icono += "▒▒"
 			else:
 				prespCelda = 10
-				icono += ".."
+				# DEPURACION ---------------------------------------------
+				if dep >= 2: icono += ".."
 			
 			fila += icono
 			
@@ -67,8 +72,11 @@ static func Generate_Map(ancho: int, alto: int):
 						"estructura": prinLoc["nombre"],
 						"loot": listLoot
 					}
-		print(fila)
-
+		# DEPURACION ---------------------------------------------
+		if dep >= 2: print(fila)
+		# FDEP --------------------------------------------------- 
+	
+	# DEPURACION ---------------------------------------------
 	if dep >= 1: print("\nGENERACION MAPA TERMINADA -----------------");
 	if dep >= 2: print("\nEl mundo tiene ", mapa.size(), " locaciones con loot")
 	
@@ -79,16 +87,20 @@ static func Generate_Map(ancho: int, alto: int):
 			print("Contiene este loot: ", mapa[test_coord]["loot"])
 		else:
 			print("\nLa coordenada ", test_coord, " es un terreno vacío.")
-	
+	# FDEP --------------------------------------------------- 
 
 static func Generate_World(presupuesto) -> Dictionary:
 	var _Final = {};
 	var Locaciones_Temp = Generate_Item(presupuesto, locaciones);
+	# DEPURACION ---------------------------------------------
 	if dep >= 1: print("\nGENERACION LOCACIONES TERMINADA -----------------");
+	# FDEP --------------------------------------------------- 
 	
 	for loc in Locaciones_Temp:
 		var Objetos_Temp = Generate_Item(loc["loot"], objetos);
+		# DEPURACION ---------------------------------------------
 		if dep >= 1: print("GENERACION LOOT " + loc["nombre"] + " TERMINADA -----------------");
+		# FDEP --------------------------------------------------- 
 		
 		_Final[loc["nombre"]] = [];
 		
@@ -132,7 +144,9 @@ static func Generate3D(world: Node3D) -> void:
 		if child is Sprite3D:
 			child.queue_free()
 	
+	# DEPURACION ---------------------------------------------
 	if dep >= 2: print("\n...LEVANTANDO EL MUNDO 3D")
+	# FDEP --------------------------------------------------- 
 	
 	for coordenada2D in mapa.keys():
 		var locDatos = mapa[coordenada2D]
@@ -161,4 +175,6 @@ static func Generate3D(world: Node3D) -> void:
 		
 		world.add_child.call_deferred(newSprite3D)
 		
+	# DEPURACION ---------------------------------------------
 	if dep >= 1: print("GENERACION DE MAPA 3D TERMINADA (" , mapa.size(), " estructuras)", " ----------------- ")
+	# FDEP --------------------------------------------------- 
