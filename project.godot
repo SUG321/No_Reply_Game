@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Procedural-Generation"
-run/main_scene="uid://b7emtcf47787"
+run/main_scene="uid://4psd3bm30ynl"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
