@@ -24,30 +24,30 @@ static var StructuresTexts = {
 	"corpse": preload("res://assets/locations/location_corpse.png")
 }
 static var Structures = [
-	{"nombre": "building",		"peso": 50, "loot": 60, "limite": 5},
-	{"nombre": "house",			"peso": 25, "loot": 10, "limite": 8},
-	{"nombre": "house_boarded",	"peso": 12, "loot": 20, "limite": 10},
-	{"nombre": "well", 			"peso": 10, "loot": 40, "limite": 6},
-	{"nombre": "camp",			"peso": 5, 	"loot": 50, "limite": 5},
-	{"nombre": "bunker",		"peso": 2, 	"loot": 80, "limite": 25},
-	{"nombre": "corpse",		"peso": 1, 	"loot": 5, 	"limite": 3},
-	{"nombre": "Nada",			"peso": 30, "loot": 0, 	"limite": 0}
+	{"name": "building",		"weight": 50, 	"loot": 60, "limite": 5},
+	{"name": "house",			"weight": 25, 	"loot": 10, "limite": 8},
+	{"name": "house_boarded",	"weight": 12, 	"loot": 20, "limite": 10},
+	{"name": "well", 			"weight": 10, 	"loot": 40, "limite": 6},
+	{"name": "camp",			"weight": 5, 	"loot": 50, "limite": 5},
+	{"name": "bunker",			"weight": 2, 	"loot": 80, "limite": 25},
+	{"name": "corpse",			"weight": 1, 	"loot": 5, 	"limite": 3},
+	{"name": "Null",			"weight": 30, 	"loot": 0, 	"limite": 0}
 ]
 static var Items = [
-	{"nombre": "trash",				"peso": 40},
-	{"nombre": "components",		"peso": 35},
-	{"nombre": "metal",				"peso": 30},
-	{"nombre": "bag",				"peso": 25},
-	{"nombre": "clothes",			"peso": 20},
-	{"nombre": "backpack",			"peso": 15},
-	{"nombre": "weapon",			"peso": 10},
-	{"nombre": "food",				"peso": 5},
-	{"nombre": "meds",				"peso": 3},
-	{"nombre": "water",				"peso": 2},
-	{"nombre": "Nada",				"peso": 20}
+	{"name": "trash",		"weight": 40},
+	{"name": "components",	"weight": 35},
+	{"name": "metal",		"weight": 30},
+	{"name": "bag",			"weight": 25},
+	{"name": "clothes",		"weight": 20},
+	{"name": "backpack",	"weight": 15},
+	{"name": "weapon",		"weight": 10},
+	{"name": "food",		"weight": 5},
+	{"name": "meds",		"weight": 3},
+	{"name": "water",		"weight": 2},
+	{"name": "Null",		"weight": 20}
 ]
 static var Dificults = [
-	{"dificultad": "Facil", "peso": 130},
-	{"dificultad": "Normal", "peso": 150},
-	{"dificultad": "Dificil", "peso": 180}
+	{"dificult": "Facil", 	"weight": 130},
+	{"dificult": "Normal", 	"weight": 150},
+	{"dificult": "Dificil", "weight": 180}
 ]

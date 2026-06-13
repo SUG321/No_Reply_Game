@@ -15,8 +15,8 @@ func _ready() -> void:
 func _pressed() -> void:
 	var Mundo =  Generator.new()
 	Mundo.depuration = 1
-	Mundo.map_width = width.value
-	Mundo.map_depth = depth.value
+	Mundo.mapWidth = width.value
+	Mundo.mapDepth = depth.value
 	Mundo.Generate(TextBox.text, canvas)
 	pass
 	

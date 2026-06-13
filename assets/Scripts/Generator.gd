@@ -5,20 +5,23 @@ extends RefCounted
 var rng = RandomNumberGenerator.new()
 var noise = FastNoiseLite.new()
 
+# ESCENAS
+var locationScene = preload("res://assets/scenes/location.tscn")
+
 # Variables
 var depuration = 1
-var map_width = 10 # X
-var map_depth = 10 # Z
+var mapWidth = 10 # X
+var mapDepth = 10 # Z
 var map = {}
-var cell_size = 4
+var cellSize = 4
 
 # DICCIONARIOS
+var locationsTextures = ObjDictionary.StructuresTexts # Texturas
 var locations = ObjDictionary.Structures # Estructuras
 var objects = ObjDictionary.Items # Objetos
 var limits = ObjDictionary.Dificults # Limites de Peso
-var locationsTex = ObjDictionary.StructuresTexts # Texturas
 
-
+# FUNCIONES
 func Generate(Seed: String, world: Node3D) -> void:
 	var _Seed = Seed.hash()
 	rng.seed = _Seed
@@ -26,186 +29,165 @@ func Generate(Seed: String, world: Node3D) -> void:
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise.frequency = 0.08
 	
-	Generate_Map(map_depth, map_width)
-	Generate3D(world)
+	Generate_Heat_Map(mapDepth, mapWidth)
+	Generate_3D_World(world)
 
 
-func Generate_World(presupuesto) -> Dictionary:
-	var _Final = {};
-	var Locaciones_Temp = Generate_Item(presupuesto, locations);
-	# DEPURACION ---------------------------------------------
-	if depuration >= 1: print("\nGENERACION LOCACIONES TERMINADA -----------------");
-	# FDEP --------------------------------------------------- 
-	
-	for loc in Locaciones_Temp:
-		var Objetos_Temp = Generate_Item(loc["loot"], objects);
-		# DEPURACION ---------------------------------------------
-		if depuration >= 1: print("GENERACION LOOT TERMINADA -----------------");
-		# FDEP --------------------------------------------------- 
-		
-		_Final[loc["nombre"]] = [];
-		
-		for obj in Objetos_Temp:
-			_Final[loc["nombre"]].append(obj["nombre"]);
-	
-	return _Final;
-
-
-func Generate_Map(ancho: int, alto: int):
+func Generate_Heat_Map(ancho: int, alto: int):
 	# DEPURACION ---------------------------------------------
 	if depuration>= 2: print("\n...INIT GEN MAPA")
-	# FDEP --------------------------------------------------- 
+	# FIN DEPURACION -----------------------------------------
 	map.clear()
-	var unPositions = {}
+	var uniquePositions = {}
 	
 	for y in range(alto):
 		var fila = ""
 		for x in range(ancho):
-			var valor = noise.get_noise_2d(x, y)
-			var prespCelda = 0
-			var icono = ""
+			var value = noise.get_noise_2d(x, y)
+			var cellBudget = 0
+			var icon = ""
 			
-			if valor > 0.3:
-				prespCelda = 80
+			if value > 0.3:
+				cellBudget = 80
 				# DEPURACION ---------------------------------------------
-				if depuration >= 2: icono = "██"
-			elif valor > 0.0:
-				prespCelda = 30
+				if depuration >= 2: icon = "██"
+			elif value > 0.0:
+				cellBudget = 30
 				# DEPURACION ---------------------------------------------
-				if depuration >= 2: icono += "▒▒"
+				if depuration >= 2: icon += "▒▒"
 			else:
-				prespCelda = 10
+				cellBudget = 10
 				# DEPURACION ---------------------------------------------
-				if depuration >= 2: icono += ".."
+				if depuration >= 2: icon += ".."
 			
-			fila += icono
+			fila += icon
 			
-			var genLocs = Generate_Item(prespCelda, locations)
-			if genLocs.size() > 0:
-				var prinLoc = genLocs[0]
-				var locName = prinLoc["nombre"]
+			var generatedLocations = Generate_Entities(cellBudget, locations)
+			if generatedLocations.size() > 0:
+				var principalLocation = generatedLocations[0]
+				var locationName = principalLocation["name"]
 				
-				if locName != "Nada":
-					var minDistance = 0
+				if locationName != "Null":
+					var minimumDistance = 0
 					
-					if locName == "well":
-						minDistance = 20
-					elif locName == "bunker":
-						minDistance = 30
-					elif locName == "camp":
-						minDistance = 10
-					elif locName == "house_boarded":
-						minDistance = 20
+					if locationName == "well":
+						minimumDistance = 20
+					elif locationName == "bunker":
+						minimumDistance = 30
+					elif locationName == "camp":
+						minimumDistance = 10
+					elif locationName == "house_boarded":
+						minimumDistance = 20
 					
-					var vClose = false
-					if minDistance > 0:
-						if unPositions.has(locName):
-							for pos in unPositions[locName]:
-								if pos.distance_to(Vector2(x, y)) < minDistance:
-									vClose = true
+					var veryClose = false
+					if minimumDistance > 0:
+						if uniquePositions.has(locationName):
+							for position in uniquePositions[locationName]:
+								if position.distance_to(Vector2(x, y)) < minimumDistance:
+									veryClose = true
 									break
 					
-					if vClose:
-						locName = "Nada"
+					if veryClose:
+						locationName = "Null"
 					else:
-						if minDistance > 0:
-							if not unPositions.has(locName):
-								unPositions[locName] = []
-							unPositions[locName].append(Vector2(x, y))
+						if minimumDistance > 0:
+							if not uniquePositions.has(locationName):
+								uniquePositions[locationName] = []
+							uniquePositions[locationName].append(Vector2(x, y))
 				
-				if locName != "Nada":
-					var genObjs = Generate_Item(prinLoc["loot"], objects)
-					var listLoot = []
-					for obj in genObjs:
-						listLoot.append(obj["nombre"])
+				if locationName != "Null":
+					var generatedObjects = Generate_Entities(principalLocation["loot"], objects)
+					var lootList = []
+					for object in generatedObjects:
+						lootList.append(object["name"])
 					map[Vector2(x, y)] = {
-						"estructura": prinLoc["nombre"],
-						"loot": listLoot
+						"structure": principalLocation["name"],
+						"loot": lootList
 					}
 		# DEPURACION ---------------------------------------------
 		if depuration >= 2: print(fila)
-		# FDEP --------------------------------------------------- 
+		# FIN DEPURACION ----------------------------------------- 
 	
 	# DEPURACION ---------------------------------------------
 	if depuration >= 1: print("\nGENERACION MAPA TERMINADA -----------------");
-	if depuration >= 2: print("\nEl mundo tiene ", map.size(), " locations con loot")
+	if depuration >= 2: print("\nEl mundo tiene ", map.size(), " locaciones con loot")
 	
 	if depuration >= 3:
-		var test_coord = Vector2(10, 10)
-		if map.has(test_coord):
-			print("\nEn la coordenada ", test_coord, " hay: ", map[test_coord]["estructura"])
-			print("Contiene este loot: ", map[test_coord]["loot"])
+		var test_coordinate = Vector2(10, 10)
+		if map.has(test_coordinate):
+			print("\nEn la coordenada ", test_coordinate, " hay: ", map[test_coordinate]["structure"])
+			print("Contiene este loot: ", map[test_coordinate]["loot"])
 		else:
-			print("\nLa coordenada ", test_coord, " es un terreno vacío.")
-	# FDEP --------------------------------------------------- 
+			print("\nLa coordenada ", test_coordinate, " es un terreno vacío.")
+	# FIN DEPURACION ----------------------------------------- 
 
-
-func Generate_Item(presupuesto: int, lista: Array) -> Array:
-	var pesoTotal = 0;
-	var _Seleccion = [];
+func Generate_Entities(budget: int, list: Array) -> Array:
+	var totalWeight = 0;
+	var _Selection = [];
 	
-	for i in range(lista.size()):
-		pesoTotal += lista[i]["peso"];
+	for i in range(list.size()):
+		totalWeight += list[i]["weight"];
 	
-	while presupuesto > 0:
-		var tirada = rng.randi_range(1, pesoTotal); 
-		var locacionTemporal = {};
+	while budget > 0:
+		var roll = rng.randi_range(1, totalWeight); 
+		var temporalLoaction = {};
 		
-		for loc in lista:
-			tirada -= loc["peso"];
-			if tirada <= 0:
-				locacionTemporal = loc;	
+		for location in list:
+			roll -= location["weight"];
+			if roll <= 0:
+				temporalLoaction = location;	
 				break;
 				
 		
-		if locacionTemporal["peso"] <= presupuesto:
-			var loc = locacionTemporal;
+		if temporalLoaction["weight"] <= budget:
+			var location = temporalLoaction;
 			
-			if loc["nombre"] == "Nada":
-				presupuesto = 0;
+			if location["name"] == "Null":
+				budget = 0;
 			
-			presupuesto -= loc["peso"];
-			_Seleccion.append(loc);
+			budget -= location["weight"];
+			_Selection.append(location);
 		else:
 			break;
-	return _Seleccion;
+	return _Selection;
 
-
-func Generate3D(world: Node3D) -> void:
+func Generate_3D_World(world: Node3D) -> void:
 	for child in world.get_children():
-		if child is Sprite3D:
+		if child is Area3D:
 			child.queue_free()
 	
 	# DEPURACION ---------------------------------------------
 	if depuration >= 2: print("\n...LEVANTANDO EL MUNDO 3D")
-	# FDEP --------------------------------------------------- 
+	# FIN DEPURACION ----------------------------------------- 
 	
-	for coordenada2D in map.keys():
-		var locDatos = map[coordenada2D]
-		var locNombre = locDatos["estructura"]
+	for coordinate2D in map.keys():
+		var locationData = map[coordinate2D]
+		var locationName = locationData["structure"]
+		var newLocation = locationScene.instantiate()
 		var newSprite3D = Sprite3D.new()
 		
-		if locationsTex.has(locNombre):
-			newSprite3D.texture = locationsTex[locNombre]
+		if locationsTextures.has(locationName):
+			newSprite3D.texture = locationsTextures[locationName]
 		
 		# CAMBIO DE COORDENADAS 2D a 3D
 		# X 2D = X 3D.
 		# Y 2D = Z 3D.
-		var posicion_3d = Vector3(
-			coordenada2D.x * cell_size, 
+		var position3d = Vector3(
+			coordinate2D.x * cellSize, 
 			0, # Y 3D = 0 (Suelo)
-			coordenada2D.y * cell_size
+			coordinate2D.y * cellSize
 		)
 		
-		newSprite3D.position = posicion_3d
+		newLocation.position = position3d
 		newSprite3D.billboard = 1
 		
 		# Si la imagen mide 128px de alto y el pixel_size es 0.01 se sube a la mitad
-		newSprite3D.position.y += (newSprite3D.texture.get_height() * newSprite3D.pixel_size) / 2.0
+		newLocation.position.y += (newSprite3D.texture.get_height() * newSprite3D.pixel_size) / 2.0
 		
 		
-		world.add_child(newSprite3D)
+		newLocation.add_child(newSprite3D)
+		world.add_child(newLocation)
 		
 	# DEPURACION ---------------------------------------------
 	if depuration >= 1: print("GENERACION DE MAPA 3D TERMINADA (" , map.size(), " estructuras)", " ----------------- ")
-	# FDEP --------------------------------------------------- 
+	# FIN DEPURACION ----------------------------------------- 
