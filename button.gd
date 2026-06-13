@@ -5,9 +5,6 @@ extends Button
 @onready var width = $"../../Coords/Alto"
 @onready var depth = $"../../Coords/Ancho"
 
-# SEÑALES
-signal World(Generated);
-
 # FUNCIONES INTEGRADAS
 func _ready() -> void:
 	pass
@@ -18,5 +15,3 @@ func _pressed() -> void:
 	Mundo.mapWidth = width.value
 	Mundo.mapDepth = depth.value
 	Mundo.Generate(TextBox.text, canvas)
-	pass
-	

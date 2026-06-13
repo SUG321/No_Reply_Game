@@ -2,26 +2,27 @@ class_name Generator
 extends RefCounted
 
 # MAQUINAS
-var rng = RandomNumberGenerator.new()
-var noise = FastNoiseLite.new()
+var rng :RandomNumberGenerator = RandomNumberGenerator.new()
+var noise :FastNoiseLite = FastNoiseLite.new()
+var astarGrid :AStarGrid2D
 
 # ESCENAS
-var locationScene = preload("res://assets/scenes/location.tscn")
+var locationScene :PackedScene = preload("res://assets/scenes/location.tscn")
 
 # Variables
-var depuration = 1
-var mapWidth = 10 # X
-var mapDepth = 10 # Z
-var map = {}
-var cellSize = 4
+var depuration :int= 1
+var mapWidth :int = 10 # X
+var mapDepth :int = 10 # Z
+var map :Dictionary = {}
+var cellSize :float = 4.0
 
 # DICCIONARIOS
-var locationsTextures = ObjDictionary.StructuresTexts # Texturas
-var locations = ObjDictionary.Structures # Estructuras
-var objects = ObjDictionary.Items # Objetos
-var limits = ObjDictionary.Dificults # Limites de Peso
+var locationsTextures :Dictionary = ObjDictionary.StructuresTexts # Texturas
+var locations :Array = ObjDictionary.Structures # Estructuras
+var objects :Array = ObjDictionary.Items # Objetos
+var limits :Array = ObjDictionary.Dificults # Limites de Peso
 
-# FUNCIONES
+# FUNCIONES DE MAPA
 func Generate(Seed: String, world: Node3D) -> void:
 	var _Seed = Seed.hash()
 	rng.seed = _Seed
@@ -191,3 +192,32 @@ func Generate_3D_World(world: Node3D) -> void:
 	# DEPURACION ---------------------------------------------
 	if depuration >= 1: print("GENERACION DE MAPA 3D TERMINADA (" , map.size(), " estructuras)", " ----------------- ")
 	# FIN DEPURACION ----------------------------------------- 
+
+
+# FUNCIONES DE ASTARGRID
+func Initialize_Navigation(width: int, height: int) -> void:
+	astarGrid = AStarGrid2D.new()
+	
+	astarGrid.region = Rect2i(0, 0, width, height)
+	astarGrid.cell_size = Vector2(1, 1)
+	
+	astarGrid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
+	astarGrid.update()
+	
+	for cell in map:
+		var location = map[cell]["name"]
+		var numberOfSolids = 0
+		
+		if location == "building" or location == "house" or location == "house_boarded" or location == "bunker":
+			astarGrid.set_point_solid(cell, true)
+			numberOfSolids += 1
+			
+	if depuration >= 1: print("AStarGrid2D listo, ")
+
+func Get_Route(start: Vector2i, end: Vector2i) -> Array[Vector2i]:
+	if astarGrid.is_point_solid(end):
+		print("[GAMEPLAY]: No se puede llegar a ese lugar...")
+		return []
+	
+	var route = astarGrid.get_id_path(start, end)
+	return route

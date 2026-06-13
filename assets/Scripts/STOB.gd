@@ -2,7 +2,7 @@ class_name ObjDictionary
 extends RefCounted
 
 # DICCIONARIOS
-static var ItemsTexts = {
+static var ItemsTexts :Dictionary = {
 	"backpack": preload("res://assets/items/item_backpack.png"),
 	"bag": preload("res://assets/items/item_bag.png"),
 	"clothes": preload("res://assets/items/item_clothes.png"),
@@ -14,7 +14,7 @@ static var ItemsTexts = {
 	"water": preload("res://assets/items/item_water.png"),
 	"weapon": preload("res://assets/items/item_weapon.png")
 }
-static var StructuresTexts = {
+static var StructuresTexts :Dictionary = {
 	"building": preload("res://assets/locations/location_building.png"),
 	"house": preload("res://assets/locations/location_house.png"),
 	"house_boarded": preload("res://assets/locations/location_house_boarded.png"),
@@ -23,7 +23,9 @@ static var StructuresTexts = {
 	"bunker": preload("res://assets/locations/location_bunker.png"),
 	"corpse": preload("res://assets/locations/location_corpse.png")
 }
-static var Structures = [
+
+# DICCIONARIOS
+static var Structures :Array = [
 	{"name": "building",		"weight": 50, 	"loot": 60, "limite": 5},
 	{"name": "house",			"weight": 25, 	"loot": 10, "limite": 8},
 	{"name": "house_boarded",	"weight": 12, 	"loot": 20, "limite": 10},
@@ -33,7 +35,7 @@ static var Structures = [
 	{"name": "corpse",			"weight": 1, 	"loot": 5, 	"limite": 3},
 	{"name": "Null",			"weight": 30, 	"loot": 0, 	"limite": 0}
 ]
-static var Items = [
+static var Items :Array = [
 	{"name": "trash",		"weight": 40},
 	{"name": "components",	"weight": 35},
 	{"name": "metal",		"weight": 30},
@@ -46,7 +48,7 @@ static var Items = [
 	{"name": "water",		"weight": 2},
 	{"name": "Null",		"weight": 20}
 ]
-static var Dificults = [
+static var Dificults :Array = [
 	{"dificult": "Facil", 	"weight": 130},
 	{"dificult": "Normal", 	"weight": 150},
 	{"dificult": "Dificil", "weight": 180}
