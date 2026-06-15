@@ -3,7 +3,7 @@ extends Node3D
 
 # VARIABLES
 var actualRoute :Array[Vector2i] = []
-var movementVelocity :float = 2.0
+var movementVelocity :float = 6.0
 
 func Follow_Route(newRoute :Array[Vector2i]) -> void:
 	print("new route: ", newRoute)
@@ -16,7 +16,7 @@ func _physics_process(delta :float) -> void:
 	if actualRoute.size() > 0:
 		var nextCell = actualRoute[0]
 		var destinationPosition = Vector3(
-			nextCell.x,
+			nextCell.x * Config.cellSize,
 			global_position.y,
 			nextCell.y * Config.cellSize
 		)

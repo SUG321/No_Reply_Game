@@ -10,8 +10,6 @@ var astarGrid :AStarGrid2D
 # FUNCIONES DE ASTARGRID
 func Initialize_Navigation(map: Dictionary , width: int, height: int) -> void:
 	var numberOfSolids = 0 # DEPURACION
-	width *= int(Config.cellSize)
-	height *= int(Config.cellSize)
 	
 	astarGrid = AStarGrid2D.new()
 	
@@ -39,7 +37,23 @@ func Initialize_Navigation(map: Dictionary , width: int, height: int) -> void:
 		print("--------------------------------------------------")
 	# FIN DEPURACION -----------------------------------------
 	
-	human.global_position = Vector3(0, 0, 0)
+	var securePositionFound = false
+	
+	for x in range(width):
+		for y in range(height):
+			var actualCell = Vector2i(x, y)
+			
+			if not astarGrid.is_point_solid(actualCell):
+				human.global_position = Vector3(
+					actualCell.x * Config.cellSize,
+					human.global_position.y,
+					actualCell.y * Config.cellSize
+				)
+				securePositionFound = true
+				break
+				
+		if securePositionFound:
+			break
 
 func Get_Route(start: Vector2i, end: Vector2i) -> Array[Vector2i]:
 	if astarGrid.is_point_solid(end):
@@ -61,17 +75,21 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 		if intersectionPoint != null:
 			var destinyCell = Vector2i(
-				round(intersectionPoint.x),
+				round(intersectionPoint.x / Config.cellSize),
 				round(intersectionPoint.z / Config.cellSize)
 			)
 			
+			if not astarGrid.is_in_boundsv(destinyCell):
+				print("[GAMEPLAY]: El lugar al que intentas ir está fuera de los límites del mapa.")
+				return
+			
 			var cellStart = Vector2i(
-				round(human.global_position.x),
+				round(human.global_position.x / Config.cellSize),
 				round(human.global_position.z / Config.cellSize)
 			)
 			
 			print("start: ", cellStart, " | final: ", destinyCell)
 			
-			var route = Get_Route(destinyCell, cellStart)
+			var route = Get_Route(cellStart, destinyCell)
 			print("route: ", route)
 			human.Follow_Route(route)
