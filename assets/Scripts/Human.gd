@@ -2,23 +2,23 @@ class_name Human
 extends Node3D
 
 # VARIABLES
-var actualRoute: Array[Vector2i] = []
-var movementVelocity: float = 2.0
-var cellSize: float = 4.0
+var actualRoute :Array[Vector2i] = []
+var movementVelocity :float = 2.0
 
-func Follow_Route(newRoute: Array[Vector2i]) -> void:
+func Follow_Route(newRoute :Array[Vector2i]) -> void:
+	print("new route: ", newRoute)
+	print("actual route: ", actualRoute, "\n")
 	if newRoute.size() > 0:
 		newRoute.pop_front()
 	actualRoute = newRoute
 
-func _physics_process(delta: float) -> void:
+func _physics_process(delta :float) -> void:
 	if actualRoute.size() > 0:
 		var nextCell = actualRoute[0]
-		
 		var destinationPosition = Vector3(
 			nextCell.x,
 			global_position.y,
-			nextCell.y * cellSize
+			nextCell.y * Config.cellSize
 		)
 	
 		global_position = global_position.move_toward(destinationPosition, movementVelocity * delta)
