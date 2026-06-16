@@ -6,11 +6,16 @@ var actualRoute :Array[Vector2i] = []
 var movementVelocity :float = 6.0
 
 func Follow_Route(newRoute :Array[Vector2i]) -> void:
-	print("new route: ", newRoute)
-	print("actual route: ", actualRoute, "\n")
-	if newRoute.size() > 0:
-		newRoute.pop_front()
+
 	actualRoute = newRoute
+	
+	# DEPURACION ---------------------------------------------
+	if Config.depuration >= 2:
+		print("\n[Human.gd/Follow_Route]: --- ORDEN DE MOVIMIENTO RECIBIDA ---")
+		print("- Pasos a recorrer : ", actualRoute.size())
+		print("- Ruta a seguir    : ", actualRoute)
+		print("--------------------------------------------------------------")
+	# FIN DEPURACION -----------------------------------------
 
 func _physics_process(delta :float) -> void:
 	if actualRoute.size() > 0:

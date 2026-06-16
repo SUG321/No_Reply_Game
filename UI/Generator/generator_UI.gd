@@ -13,8 +13,6 @@ func _ready() -> void:
 
 # SEÑALES
 func _on_button_pressed() -> void: # FUNCION: BOTON PRESIONADO
-	for child in map3D.get_children():
-		child.queue_free()
 	
 	var width :int = widthRange.value
 	var depth :int = depthRange.value

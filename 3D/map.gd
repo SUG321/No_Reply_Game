@@ -2,7 +2,7 @@ extends Node3D
 
 # MODULOS ONREADY
 @onready var human :Human = $"../Human"
-@onready var camera :Camera3D = $"../Camera3D"
+@onready var camera :Camera3D = $"../Camera3D2"
 
 # ASTARGRID
 var astarGrid :AStarGrid2D
@@ -22,7 +22,7 @@ func Initialize_Navigation(map: Dictionary , width: int, height: int) -> void:
 	for cell in map:
 		var location = map[cell]["structure"]
 		
-		if location == "building" or location == "house" or location == "house_boarded" or location == "bunker":
+		if location == "building" or  location == "house" or location == "house_boarded" or location == "bunker":
 			astarGrid.set_point_solid(cell, true)
 			numberOfSolids += 1
 			
@@ -79,17 +79,31 @@ func _unhandled_input(event: InputEvent) -> void:
 				round(intersectionPoint.z / Config.cellSize)
 			)
 			
-			if not astarGrid.is_in_boundsv(destinyCell):
-				print("[GAMEPLAY]: El lugar al que intentas ir está fuera de los límites del mapa.")
-				return
+			if astarGrid != null:
+				if not astarGrid.is_in_boundsv(destinyCell):
+					print("[GAMEPLAY]: El lugar al que intentas ir está fuera de los límites del mapa.")
+					return
 			
-			var cellStart = Vector2i(
-				round(human.global_position.x / Config.cellSize),
-				round(human.global_position.z / Config.cellSize)
-			)
+				var cellStart = Vector2i(
+					round(human.global_position.x / Config.cellSize),
+					round(human.global_position.z / Config.cellSize)
+				)
+				
+				var route = Get_Route(cellStart, destinyCell)
+				human.Follow_Route(route)
 			
-			print("start: ", cellStart, " | final: ", destinyCell)
-			
-			var route = Get_Route(cellStart, destinyCell)
-			print("route: ", route)
-			human.Follow_Route(route)
+				# DEPURACION ---------------------------------------------
+				if Config.depuration >= 2:
+					print("\n[map.gd/_unhandled_input]: --- NUEVO CLIC DETECTADO ---")
+					print("- Coordenada Real 3D  : X: ", snapped(intersectionPoint.x, 0.1), ", Z: ", snapped(intersectionPoint.z, 0.1))
+					print("- Traducido a Celda   : ", destinyCell)
+					print("- Inicio del Personaje: ", cellStart)
+					
+					if route.is_empty():
+						print("- ESTADO DE RUTA: AStarGrid devolvió [] (Destino bloqueado o inalcanzable)")
+					else:
+						print("- ESTADO DE RUTA: Ruta trazada exitosamente.")
+					print("------------------------------------------------------------------")
+				# FIN DEPURACION -----------------------------------------
+				
+				human.Follow_Route(route)

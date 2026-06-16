@@ -28,7 +28,8 @@ func Generate(Seed: String, world: Node3D) -> void:
 	noise.frequency = 0.08
 	
 	Generate_Heat_Map(mapDepth, mapWidth)
-	Generate_3D_World(world)
+	Draw_Map_Frontline(mapDepth, mapWidth, world.get_node("Limits"))
+	Generate_3D_World(world.get_node("Structures"))
 
 
 func Generate_Heat_Map(width: int, height: int):
@@ -147,9 +148,7 @@ func Generate_Entities(budget: int, list: Array) -> Array:
 	return _Selection;
 
 func Generate_3D_World(world: Node3D) -> void:
-	for child in world.get_children():
-		if child is Area3D:
-			child.queue_free()
+	Cleaner.Clear_Childs(world, "generatedStructures")
 	
 	# DEPURACION ---------------------------------------------
 	if Config.depuration >= 2: print("\n[generator.gd/Generate_3D_World]: ...GENERANDO MUNDO 3D")
@@ -192,8 +191,10 @@ func Generate_3D_World(world: Node3D) -> void:
 		newLocation.position = position3d
 		
 		# Si la imagen mide 128px de height y el pixel_size es 0.01 se sube a la mitad
-		newLocation.position.y += (sprite3D.texture.get_height() * sprite3D.pixel_size) / 2.0
+		if sprite3D.texture != null:
+			newLocation.position.y += (sprite3D.texture.get_height() * sprite3D.pixel_size) / 2.0
 		
+		newLocation.add_to_group("generatedStructures")
 		world.add_child(newLocation)
 		
 	# DEPURACION ---------------------------------------------
@@ -204,3 +205,54 @@ func Generate_3D_World(world: Node3D) -> void:
 		
 		print("--------------------------------------------------")
 	# FIN DEPURACION -----------------------------------------
+
+func Draw_Map_Frontline(width: int, height: int, limitsNode: Node3D) -> void:
+	Cleaner.Clear_Childs(limitsNode, "generatedFrontlines")
+	
+	var thickness: float = 0.5
+	var barHeight: float = 0.2
+	
+	var physicLongX: float = width * Config.cellSize
+	var physicLongZ: float = height * Config.cellSize
+	var centerX: float = (physicLongX / 2) - (Config.cellSize / 2)
+	var centerZ: float = (physicLongZ / 2) - (Config.cellSize / 2)
+	
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.albedo_color = Color(1, 0, 0, 0.5) 
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	
+	# MURO SUPERIOR NORTE
+	_Create_Wall(
+		Vector3(centerX, barHeight / 2.0, - Config.cellSize / 2.0),
+		Vector3(physicLongX + thickness, barHeight, thickness),
+		material,
+		limitsNode)
+	# MURO SUPERIOR SUR
+	_Create_Wall(
+		Vector3(centerX, barHeight / 2.0, physicLongZ - Config.cellSize / 2.0),
+		Vector3(physicLongX + thickness, barHeight, thickness),
+		material,
+		limitsNode)
+	# MURO SUPERIOR OESTE
+	_Create_Wall(
+		Vector3(-Config.cellSize/2.0, barHeight / 2.0, centerZ),
+		Vector3(thickness, barHeight, physicLongZ +  thickness),
+		material,
+		limitsNode)
+	# MURO SUPERIOR ESTE
+	_Create_Wall(
+		Vector3(physicLongX - Config.cellSize / 2.0, barHeight / 2.0, centerZ),
+		Vector3(thickness, barHeight, physicLongZ +  thickness),
+		material,
+		limitsNode)
+func _Create_Wall(position: Vector3, size: Vector3, material: StandardMaterial3D, limitsNode: Node3D) -> void:
+	var wall: MeshInstance3D = MeshInstance3D.new()
+	var mesh: BoxMesh = BoxMesh.new()
+	
+	mesh.size = size
+	wall.mesh = mesh
+	wall.material_override = material
+	wall.position = position
+	
+	wall.add_to_group("generatedFrontlines")
+	limitsNode.add_child(wall)
