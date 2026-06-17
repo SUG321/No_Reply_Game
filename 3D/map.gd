@@ -1,8 +1,9 @@
 extends Node3D
 
-# MODULOS ONREADY
-@onready var human :Human = $"../Human"
-@onready var camera :Camera3D = $"../Camera3D2"
+# EXPORTS
+@export var actionsMenu: PanelContainer
+@export var camera: Camera3D
+@export var human: Human
 
 # ASTARGRID
 var astarGrid :AStarGrid2D
@@ -79,12 +80,31 @@ func Get_Route(start: Vector2i, end: Vector2i) -> Array[Vector2i]:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
-		var plane = Plane(Vector3.UP, 0.0)
 		var mousePosition = event.position
 		
 		var rayOrigin = camera.project_ray_origin(mousePosition)
 		var rayDirection = camera.project_ray_normal(mousePosition)
 		
+		# RAYCAST 3D ------------------------------
+		var spaceState = get_world_3d().direct_space_state
+		var rayEnd = rayOrigin + rayDirection * 2000.0
+		var query = PhysicsRayQueryParameters3D.create(rayOrigin, rayEnd)
+		query.collide_with_areas = true
+		
+		var result = spaceState.intersect_ray(query)
+		
+		if result and result.collider.is_in_group("structures"):
+			var collidedObject = result.collider
+			var position2D = camera.unproject_position(collidedObject.global_position)
+			
+			actionsMenu.Show_Menu(position2D, collidedObject.global_position, collidedObject.name)
+			return
+		# FINAL RAYCAST 3D -------------------------
+		
+		if actionsMenu.visible:
+			actionsMenu.hide()
+		
+		var plane = Plane(Vector3.UP, 0.0)
 		var intersectionPoint = plane.intersects_ray(rayOrigin, rayDirection)
 		
 		if intersectionPoint != null:
@@ -104,7 +124,6 @@ func _unhandled_input(event: InputEvent) -> void:
 				)
 				
 				var route = Get_Route(cellStart, destinyCell)
-				human.Follow_Route(route)
 			
 				# DEPURACION ---------------------------------------------
 				if Config.depuration >= 2:

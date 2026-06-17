@@ -19,15 +19,15 @@ func _ready() -> void:
 # SEÑALES
 func _on_button_pressed() -> void: # FUNCION: BOTON PRESIONADO
 	
-	var width :int = widthRange.value
-	var depth :int = depthRange.value
+	var depth :int = widthRange.value
+	var width :int = depthRange.value
 	
 	var world =  Generator.new()
-	world.mapWidth = width
-	world.mapDepth = depth
+	world.mapWidth = depth
+	world.mapDepth = width
 	world.Generate(seedText.text, map3D)
 	
-	map3D.Initialize_Navigation(world.map, width, depth)
+	map3D.Initialize_Navigation(world.map, depth, width)
 
 func _on_message_emit(message: String) -> void:
 	messagesTextBox.text = message

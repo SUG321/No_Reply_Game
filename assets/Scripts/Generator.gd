@@ -148,7 +148,7 @@ func Generate_Entities(budget: int, list: Array) -> Array:
 	return _Selection;
 
 func Generate_3D_World(world: Node3D) -> void:
-	Utilities.Clear_Childs(world, "generatedStructures")
+	Utilities.Clear_Childs(world, "structures")
 	
 	# DEPURACION ---------------------------------------------
 	if Config.depuration >= 2: print("\n[generator.gd/Generate_3D_World]: ...GENERANDO MUNDO 3D")
@@ -194,7 +194,7 @@ func Generate_3D_World(world: Node3D) -> void:
 		if sprite3D.texture != null:
 			newLocation.position.y += (sprite3D.texture.get_height() * sprite3D.pixel_size) / 2.0
 		
-		newLocation.add_to_group("generatedStructures")
+		newLocation.add_to_group("structures")
 		world.add_child(newLocation)
 		
 	# DEPURACION ---------------------------------------------
