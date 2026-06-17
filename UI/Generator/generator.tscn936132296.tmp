@@ -75,7 +75,7 @@ value = 10.0
 layout_mode = 0
 offset_top = 195.0
 offset_right = 425.0
-offset_bottom = 275.0
+offset_bottom = 245.0
 
 [node name="MarginContainer" type="MarginContainer" parent="MessagesPanel" unique_id=2101601377]
 layout_mode = 1
@@ -94,4 +94,3 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 15
 placeholder_text = "Aqui se mostraran los mensajes..."
 editable = false
-wrap_mode = 1

@@ -4,9 +4,9 @@ extends Node3D
 # VARIABLES
 var actualRoute :Array[Vector2i] = []
 var movementVelocity :float = 6.0
+var solidStructures: Array[Vector2i]
 
 func Follow_Route(newRoute :Array[Vector2i]) -> void:
-
 	actualRoute = newRoute
 	
 	# DEPURACION ---------------------------------------------

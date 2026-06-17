@@ -148,7 +148,7 @@ func Generate_Entities(budget: int, list: Array) -> Array:
 	return _Selection;
 
 func Generate_3D_World(world: Node3D) -> void:
-	Cleaner.Clear_Childs(world, "generatedStructures")
+	Utilities.Clear_Childs(world, "generatedStructures")
 	
 	# DEPURACION ---------------------------------------------
 	if Config.depuration >= 2: print("\n[generator.gd/Generate_3D_World]: ...GENERANDO MUNDO 3D")
@@ -207,7 +207,7 @@ func Generate_3D_World(world: Node3D) -> void:
 	# FIN DEPURACION -----------------------------------------
 
 func Draw_Map_Frontline(width: int, height: int, limitsNode: Node3D) -> void:
-	Cleaner.Clear_Childs(limitsNode, "generatedFrontlines")
+	Utilities.Clear_Childs(limitsNode, "generatedFrontlines")
 	
 	var thickness: float = 0.5
 	var barHeight: float = 0.2

@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 Config="*uid://dy32xiw40uop8"
+Utilities="*uid://uxy2verquhaq"
 
 [display]
 
