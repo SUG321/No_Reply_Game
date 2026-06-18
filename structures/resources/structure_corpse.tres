@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StructureData" format=3 uid="uid://cs53t0bauluek"]
+
+[ext_resource type="Script" uid="uid://dc5we5fto5b4j" path="res://structures/structure_data.gd" id="1_2107u"]
+[ext_resource type="Texture2D" uid="uid://twwyurgpgxdb" path="res://structures/sprites/structure_corpse.png" id="2_8vnag"]
+
+[resource]
+script = ExtResource("1_2107u")
+id = "corpse"
+displayName = "Cadaver"
+texture = ExtResource("2_8vnag")
+spawnWeight = 1
+lootAmount = 5
+lootLimit = 3
+metadata/_custom_type_script = "uid://dc5we5fto5b4j"

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://bevxevuvourm2"]
+
+[ext_resource type="Script" uid="uid://dr0v2qk7vk838" path="res://items/item_data.gd" id="1_nd7w5"]
+[ext_resource type="Texture2D" uid="uid://cuyi7ga31aee5" path="res://items/sprites/item_weapon.png" id="2_8xeel"]
+
+[resource]
+script = ExtResource("1_nd7w5")
+id = "weapon"
+displayName = "Arma"
+texture = ExtResource("2_8xeel")
+metadata/_custom_type_script = "uid://dr0v2qk7vk838"

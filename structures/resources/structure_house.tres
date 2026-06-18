@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="StructureData" format=3 uid="uid://bv434l8vlbaix"]
+
+[ext_resource type="Script" uid="uid://dc5we5fto5b4j" path="res://structures/structure_data.gd" id="1_oym45"]
+[ext_resource type="Texture2D" uid="uid://dckam8go13lmt" path="res://structures/sprites/structure_house.png" id="2_tp6s8"]
+
+[resource]
+script = ExtResource("1_oym45")
+id = "house"
+displayName = "Casa"
+texture = ExtResource("2_tp6s8")
+spawnWeight = 25
+metadata/_custom_type_script = "uid://dc5we5fto5b4j"

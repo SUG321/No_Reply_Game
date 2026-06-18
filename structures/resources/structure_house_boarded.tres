@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StructureData" format=3 uid="uid://djg04tm5ljn2"]
+
+[ext_resource type="Script" uid="uid://dc5we5fto5b4j" path="res://structures/structure_data.gd" id="1_88srg"]
+[ext_resource type="Texture2D" uid="uid://bbou7wpw5cgsb" path="res://structures/sprites/structure_house_boarded.png" id="2_gsk4f"]
+
+[resource]
+script = ExtResource("1_88srg")
+id = "house_boarded"
+displayName = "Casa Tableada"
+texture = ExtResource("2_gsk4f")
+spawnWeight = 12
+lootAmount = 20
+lootLimit = 10
+metadata/_custom_type_script = "uid://dc5we5fto5b4j"

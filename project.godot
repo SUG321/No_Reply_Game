@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 Config="*uid://dy32xiw40uop8"
 Utilities="*uid://uxy2verquhaq"
+Database="*uid://dgbitwajadxhh"
 
 [display]
 

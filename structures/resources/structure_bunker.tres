@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StructureData" format=3 uid="uid://clfnagbh5gb6b"]
+
+[ext_resource type="Script" uid="uid://dc5we5fto5b4j" path="res://structures/structure_data.gd" id="1_8hg8c"]
+[ext_resource type="Texture2D" uid="uid://gww53c1kmyis" path="res://structures/sprites/structure_bunker.png" id="2_v3drm"]
+
+[resource]
+script = ExtResource("1_8hg8c")
+id = "bunker"
+displayName = "Bunker"
+texture = ExtResource("2_v3drm")
+spawnWeight = 2
+lootAmount = 80
+lootLimit = 25
+metadata/_custom_type_script = "uid://dc5we5fto5b4j"

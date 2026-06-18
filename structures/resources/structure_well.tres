@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="StructureData" format=3 uid="uid://c46x8q3v3dd8b"]
+
+[ext_resource type="Script" uid="uid://dc5we5fto5b4j" path="res://structures/structure_data.gd" id="1_k27fm"]
+[ext_resource type="Texture2D" uid="uid://dw8cbmllsvoot" path="res://structures/sprites/structure_well.png" id="2_l0ls7"]
+
+[resource]
+script = ExtResource("1_k27fm")
+id = "well"
+displayName = "Fuente"
+texture = ExtResource("2_l0ls7")
+lootAmount = 40
+lootLimit = 6
+metadata/_custom_type_script = "uid://dc5we5fto5b4j"

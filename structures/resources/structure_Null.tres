@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="StructureData" format=3 uid="uid://d2vgkwin7idl7"]
+
+[ext_resource type="Script" uid="uid://dc5we5fto5b4j" path="res://structures/structure_data.gd" id="1_6xv6k"]
+
+[resource]
+script = ExtResource("1_6xv6k")
+id = "Null"
+displayName = "Vacio"
+spawnWeight = 30
+lootAmount = 0
+lootLimit = 0
+metadata/_custom_type_script = "uid://dc5we5fto5b4j"

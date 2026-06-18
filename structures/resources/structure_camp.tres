@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StructureData" format=3 uid="uid://cyc1lcx6b0ohn"]
+
+[ext_resource type="Script" uid="uid://dc5we5fto5b4j" path="res://structures/structure_data.gd" id="1_e80hw"]
+[ext_resource type="Texture2D" uid="uid://dy27238e44hlx" path="res://structures/sprites/structure_camp.png" id="2_v7lyt"]
+
+[resource]
+script = ExtResource("1_e80hw")
+id = "camp"
+displayName = "Campamento"
+texture = ExtResource("2_v7lyt")
+spawnWeight = 5
+lootAmount = 5
+lootLimit = 3
+metadata/_custom_type_script = "uid://dc5we5fto5b4j"
