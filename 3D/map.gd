@@ -1,15 +1,19 @@
 extends Node3D
 
 # EXPORTS
-@export var actionsMenu: PanelContainer
-@export var camera: Camera3D
 @export var human: Human
+@export var mouseController: MouseController
+@export var actionsMenu: ActionsMenu
 
 # ASTARGRID
 var astarGrid :AStarGrid2D
 
 # VARIABLES
 var solidStructures :Array[Vector2i]
+
+func _ready() -> void:
+	mouseController.on_ground_clicked.connect(_process_movement) # CLIC EN EL SUELO
+	actionsMenu.on_navigate_requested.connect(_process_movement) # CLIC EN EL BOTON "IR AQUI" DEL MENU DE ACCIONES
 
 # FUNCIONES DE ASTARGRID
 func Initialize_Navigation(map: Dictionary , width: int, height: int) -> void:
@@ -78,69 +82,6 @@ func Get_Route(start: Vector2i, end: Vector2i) -> Array[Vector2i]:
 	
 	return route
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
-		var mousePosition = event.position
-		
-		var rayOrigin = camera.project_ray_origin(mousePosition)
-		var rayDirection = camera.project_ray_normal(mousePosition)
-		
-		# RAYCAST 3D ------------------------------
-		var spaceState = get_world_3d().direct_space_state
-		var rayEnd = rayOrigin + rayDirection * 2000.0
-		var query = PhysicsRayQueryParameters3D.create(rayOrigin, rayEnd)
-		query.collide_with_areas = true
-		
-		var result = spaceState.intersect_ray(query)
-		
-		if result and result.collider.is_in_group("structures"):
-			var collidedObject = result.collider
-			var position2D = camera.unproject_position(collidedObject.global_position)
-			
-			actionsMenu.Show_Menu(position2D, collidedObject.global_position, collidedObject.name)
-			return
-		# FINAL RAYCAST 3D -------------------------
-		
-		if actionsMenu.visible:
-			actionsMenu.hide()
-		
-		var plane = Plane(Vector3.UP, 0.0)
-		var intersectionPoint = plane.intersects_ray(rayOrigin, rayDirection)
-		
-		if intersectionPoint != null:
-			var destinyCell = Vector2i(
-				round(intersectionPoint.x / Config.cellSize),
-				round(intersectionPoint.z / Config.cellSize)
-			)
-			
-			if astarGrid != null:
-				if not astarGrid.is_in_boundsv(destinyCell):
-					Utilities.Print_Message("El lugar al que intentas ir está fuera de los límites del mapa.")
-					return
-			
-				var cellStart = Vector2i(
-					round(human.global_position.x / Config.cellSize),
-					round(human.global_position.z / Config.cellSize)
-				)
-				
-				var route = Get_Route(cellStart, destinyCell)
-			
-				# DEPURACION ---------------------------------------------
-				if Config.depuration >= 2:
-					print("\n[map.gd/_unhandled_input]: --- NUEVO CLIC DETECTADO ---")
-					print("- Coordenada Real 3D  : X: ", snapped(intersectionPoint.x, 0.1), ", Z: ", snapped(intersectionPoint.z, 0.1))
-					print("- Traducido a Celda   : ", destinyCell)
-					print("- Inicio del Personaje: ", cellStart)
-					
-					if route.is_empty():
-						print("- ESTADO DE RUTA: AStarGrid devolvió [] (Destino bloqueado o inalcanzable)")
-					else:
-						print("- ESTADO DE RUTA: Ruta trazada exitosamente.")
-					print("------------------------------------------------------------------")
-				# FIN DEPURACION -----------------------------------------
-				
-				human.Follow_Route(route)
-
 func Get_Free_Adyacent_Cell(targetCell: Vector2i, actualPlayerCell: Vector2i) -> Vector2i:
 	var directions = [
 		Vector2i(0, 1),		# ABAJO
@@ -172,3 +113,38 @@ func Get_Free_Adyacent_Cell(targetCell: Vector2i, actualPlayerCell: Vector2i) ->
 		return bestCell
 	else:
 		return targetCell
+
+# FUNCIONES DE SEÑALES
+
+func _process_movement(targetPosition3D: Vector3) -> void:
+	var destinyCell = Vector2i(
+		round(targetPosition3D.x / Config.cellSize),
+		round(targetPosition3D.z / Config.cellSize)
+	)
+
+	if astarGrid != null: # SI NO ESTA VACIA
+		if not astarGrid.is_in_boundsv(destinyCell): # EN CASO DE QUE SALGA DEL MAPA
+			Utilities.Print_Message("El lugar al que intentas ir está fuera de los límites del mapa.")
+			return
+
+		var cellStart = Vector2i(
+			round(human.global_position.x / Config.cellSize),
+			round(human.global_position.z / Config.cellSize)
+		)
+		
+		var route = Get_Route(cellStart, destinyCell)
+		human.Follow_Route(route)
+		
+		# DEPURACION ---------------------------------------------
+		if Config.depuration >= 2:
+			print("\n[map.gd/_unhandled_input]: --- NUEVO CLIC DETECTADO ---")
+			print("- Coordenada Real 3D  : X: ", snapped(targetPosition3D.x, 0.1), ", Z: ", snapped(targetPosition3D.z, 0.1))
+			print("- Traducido a Celda   : ", destinyCell)
+			print("- Inicio del Personaje: ", cellStart)
+			
+			if route.is_empty():
+				print("- ESTADO DE RUTA: AStarGrid devolvió [] (Destino bloqueado o inalcanzable)")
+			else:
+				print("- ESTADO DE RUTA: Ruta trazada exitosamente.")
+			print("------------------------------------------------------------------")
+		# FIN DEPURACION -----------------------------------------

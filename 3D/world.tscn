@@ -1,27 +1,29 @@
 [gd_scene format=3 uid="uid://4psd3bm30ynl"]
 
 [ext_resource type="PackedScene" uid="uid://trvpy78curgk" path="res://UI/Generator/generator.tscn" id="1_8vy5w"]
+[ext_resource type="Script" uid="uid://bgqcuwt5mfo2t" path="res://assets/Scripts/MouseController.gd" id="1_jqvin"]
 [ext_resource type="Script" uid="uid://c8a2u5iwtgx1c" path="res://3D/map.gd" id="1_oy330"]
 [ext_resource type="PackedScene" uid="uid://bmne7y47eryae" path="res://assets/scenes/human.tscn" id="2_h3xdr"]
-[ext_resource type="PackedScene" uid="uid://dow1vlcowe1gk" path="res://UI/ActionsMenu.tscn" id="4_1s1bm"]
+[ext_resource type="PackedScene" uid="uid://dow1vlcowe1gk" path="res://UI/ActionsMenu_UI.tscn" id="4_1s1bm"]
 
 [node name="world" type="Node3D" unique_id=1183276572]
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=996025534]
+[node name="Camera3D1" type="Camera3D" parent="." unique_id=996025534]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 31.08, 70, 20.147)
 projection = 1
 
-[node name="Camera3D2" type="Camera3D" parent="." unique_id=917796083]
+[node name="Camera3D" type="Camera3D" parent="." unique_id=917796083]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 25.264786, 69.061714, 39.107025)
 projection = 1
 current = true
 size = 89.311
+script = ExtResource("1_jqvin")
 
-[node name="Map" type="Node3D" parent="." unique_id=276195315 node_paths=PackedStringArray("actionsMenu", "camera", "human")]
+[node name="Map" type="Node3D" parent="." unique_id=276195315 node_paths=PackedStringArray("human", "mouseController", "actionsMenu")]
 script = ExtResource("1_oy330")
-actionsMenu = NodePath("../UI/ActionsMenu")
-camera = NodePath("../Camera3D2")
 human = NodePath("../Human")
+mouseController = NodePath("../Camera3D")
+actionsMenu = NodePath("../UI/ActionsMenu")
 
 [node name="Limits" type="Node3D" parent="Map" unique_id=700117841]
 
@@ -33,4 +35,5 @@ human = NodePath("../Human")
 
 [node name="generator" parent="UI" unique_id=1573440576 instance=ExtResource("1_8vy5w")]
 
-[node name="ActionsMenu" parent="UI" unique_id=222244645 instance=ExtResource("4_1s1bm")]
+[node name="ActionsMenu" parent="UI" unique_id=222244645 node_paths=PackedStringArray("mouseController") instance=ExtResource("4_1s1bm")]
+mouseController = NodePath("../../Camera3D")

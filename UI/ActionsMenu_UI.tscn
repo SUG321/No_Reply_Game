@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dow1vlcowe1gk"]
 
-[ext_resource type="Script" uid="uid://cw7acu7310r0w" path="res://UI/ActionsMenu.gd" id="1_7hrk5"]
+[ext_resource type="Script" uid="uid://cw7acu7310r0w" path="res://UI/ActionsMenu_UI.gd" id="1_7hrk5"]
 
 [node name="ActionsMenu" type="PanelContainer" unique_id=222244645]
 offset_right = 120.0

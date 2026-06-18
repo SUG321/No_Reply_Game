@@ -7,6 +7,8 @@ var movementVelocity :float = 6.0
 var solidStructures: Array[Vector2i]
 
 func Follow_Route(newRoute :Array[Vector2i]) -> void:
+	if newRoute.size() != 0:
+		Utilities.Print_Message("En camino...")
 	actualRoute = newRoute
 	
 	# DEPURACION ---------------------------------------------
