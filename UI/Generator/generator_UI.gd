@@ -24,8 +24,8 @@ func _ready() -> void:
 # SEÑALES
 func _on_button_pressed() -> void: # FUNCION: BOTON PRESIONADO
 	
-	var depth :int = widthRange.value
-	var width :int = depthRange.value
+	var depth :int = int(widthRange.value)
+	var width :int = int(depthRange.value)
 	
 	var world =  Generator.new()
 	world.mapWidth = depth

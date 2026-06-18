@@ -5,6 +5,15 @@
 [ext_resource type="Script" uid="uid://c8a2u5iwtgx1c" path="res://3D/map.gd" id="1_oy330"]
 [ext_resource type="PackedScene" uid="uid://bmne7y47eryae" path="res://assets/scenes/human.tscn" id="2_h3xdr"]
 [ext_resource type="PackedScene" uid="uid://dow1vlcowe1gk" path="res://UI/ActionsMenu_UI.tscn" id="4_1s1bm"]
+[ext_resource type="Script" uid="uid://bgs7d1n25grla" path="res://3D/cursor.gd" id="6_bxodh"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bxodh"]
+transparency = 1
+albedo_color = Color(0.71805245, 1, 0.6328125, 1)
+emission_enabled = true
+emission = Color(0.7176471, 1, 0.6313726, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_jqvin"]
 
 [node name="world" type="Node3D" unique_id=1183276572]
 
@@ -37,3 +46,9 @@ actionsMenu = NodePath("../UI/ActionsMenu")
 
 [node name="ActionsMenu" parent="UI" unique_id=222244645 node_paths=PackedStringArray("mouseController") instance=ExtResource("4_1s1bm")]
 mouseController = NodePath("../../Camera3D")
+
+[node name="Cursor" type="MeshInstance3D" parent="." unique_id=1114944768 node_paths=PackedStringArray("mouseController")]
+material_override = SubResource("StandardMaterial3D_bxodh")
+mesh = SubResource("PlaneMesh_jqvin")
+script = ExtResource("6_bxodh")
+mouseController = NodePath("../Camera3D")
