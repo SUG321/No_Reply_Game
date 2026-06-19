@@ -37,8 +37,11 @@ func _on_go_button_pressed() -> void:
 	on_navigate_requested.emit(structureTargetPosition)
 	hide()
 func _on_button_loot_pressed() -> void:
-	var loot = currentStructure.inventory
-	Utilities.Print_Message("Abriendo Inventario de: " + structureType + ". Contiene: " + str(loot))
+	var completeLoot: Array = []
+	for loot in currentStructure.inventory:
+		completeLoot.append(loot.displayName)
+	
+	Utilities.Print_Message("Abriendo Inventario de: " + structureType + ". Contiene: " + str(completeLoot))
 	hide()
 func _on_structure_clicked(structure: Node3D, screenPosition: Vector2) -> void:
 	if structure is Structure:

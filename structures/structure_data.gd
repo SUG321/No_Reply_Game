@@ -6,6 +6,7 @@ extends Resource
 @export var displayName: String = ""
 @export var texture: Texture2D
 @export var spawnWeight: int = 10
+@export var solid: bool = false
 
 @export_group("Reglas de Saqueo")
 @export var lootAmount: int = 10

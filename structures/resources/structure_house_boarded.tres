@@ -9,6 +9,7 @@ id = "house_boarded"
 displayName = "Casa Tableada"
 texture = ExtResource("2_gsk4f")
 spawnWeight = 12
+solid = true
 lootAmount = 20
 lootLimit = 10
 metadata/_custom_type_script = "uid://dc5we5fto5b4j"

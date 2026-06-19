@@ -9,6 +9,7 @@ id = "bunker"
 displayName = "Bunker"
 texture = ExtResource("2_v3drm")
 spawnWeight = 2
+solid = true
 lootAmount = 80
 lootLimit = 25
 metadata/_custom_type_script = "uid://dc5we5fto5b4j"

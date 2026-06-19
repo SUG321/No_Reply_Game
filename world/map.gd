@@ -28,9 +28,9 @@ func Initialize_Navigation(map: Dictionary , width: int, height: int) -> void:
 	astarGrid.update()
 	
 	for cell in map:
-		var location = map[cell]["structure"]
+		var structure = map[cell]["structure"]
 		
-		if location == "building" or  location == "house" or location == "house_boarded" or location == "bunker":
+		if structure.solid == true:
 			astarGrid.set_point_solid(cell, true)
 			solidStructures.append(cell)
 			numberOfSolids += 1

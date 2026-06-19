@@ -14,10 +14,8 @@ var mapDepth :int = 10 # Z
 var map :Dictionary = {}
 
 # DICCIONARIOS
-var locationsTextures :Dictionary = ObjDictionary.StructuresTexts # Texturas
-var locations :Array = ObjDictionary.Structures # Estructuras
-var objects :Array = ObjDictionary.Items # Objetos
-var limits :Array = ObjDictionary.Dificults # Limites de Peso
+var structures :Dictionary = Database.structures # Estructuras
+var items :Dictionary = Database.items # Objetos
 
 # FUNCIONES DE MAPA
 func Generate(Seed: String, world: Node3D) -> void:
@@ -61,10 +59,10 @@ func Generate_Heat_Map(width: int, height: int):
 			
 			fila += icon
 			
-			var generatedLocations = Generate_Entities(cellBudget, locations)
-			if generatedLocations.size() > 0:
-				var principalLocation = generatedLocations[0]
-				var locationName = principalLocation["name"]
+			var generatedStructures = Generate_Entities(cellBudget, structures)
+			if generatedStructures.size() > 0:
+				var principalStructure = generatedStructures[0]
+				var locationName = principalStructure.id
 				
 				if locationName != "Null":
 					var minimumDistance = 0
@@ -95,12 +93,12 @@ func Generate_Heat_Map(width: int, height: int):
 							uniquePositions[locationName].append(Vector2(x, y))
 				
 				if locationName != "Null":
-					var generatedObjects = Generate_Entities(principalLocation["loot"], objects)
+					var generatedObjects = Generate_Entities(principalStructure.lootAmount, items)
 					var lootList = []
 					for object in generatedObjects:
-						lootList.append(object["name"])
+						lootList.append(object)
 					map[Vector2(x, y)] = {
-						"structure": principalLocation["name"],
+						"structure": principalStructure,
 						"loot": lootList
 					}
 		# DEPURACION ---------------------------------------------
@@ -117,32 +115,31 @@ func Generate_Heat_Map(width: int, height: int):
 		print("--------------------------------------------------")
 	# FIN DEPURACION -----------------------------------------
 
-func Generate_Entities(budget: int, list: Array) -> Array:
-	var totalWeight = 0;
-	var _Selection = [];
+func Generate_Entities(budget: int, dictionary: Dictionary) -> Array:
+	var totalWeight = 0
+	var _Selection = []
 	
-	for i in range(list.size()):
-		totalWeight += list[i]["weight"];
-	
-	while budget > 0:
-		var roll = rng.randi_range(1, totalWeight); 
-		var temporalLoaction = {};
-		
-		for location in list:
-			roll -= location["weight"];
-			if roll <= 0:
-				temporalLoaction = location;	
-				break;
-				
-		
-		if temporalLoaction["weight"] <= budget:
-			var location = temporalLoaction;
+	for entity in dictionary:
+		totalWeight += dictionary[entity].spawnWeight
 			
-			if location["name"] == "Null":
+	while budget > 0:
+		var roll = rng.randi_range(1, totalWeight)
+		var temporalStructure = {}
+		
+		for entity in dictionary:
+			roll -= dictionary[entity].spawnWeight
+			if roll <= 0:
+				temporalStructure = dictionary[entity];	
+				break;
+		
+		if temporalStructure.spawnWeight <= budget:
+			var structure = temporalStructure;
+			
+			if structure.id == "Null":
 				budget = 0;
 			
-			budget -= location["weight"];
-			_Selection.append(location);
+			budget -= structure.spawnWeight;
+			_Selection.append(structure);
 		else:
 			break;
 	return _Selection;
@@ -156,18 +153,17 @@ func Generate_3D_World(world: Node3D) -> void:
 	
 	for coordinate2D in map.keys():
 		var locationData = map[coordinate2D]
-		var locationName = locationData["structure"]
+		var structure = locationData["structure"]
 		
 		var newLocation = locationScene.instantiate()
-		newLocation.structureType = locationName
+		newLocation.structureType = structure.id
 		newLocation.inventory = locationData["loot"]
-		newLocation.name = locationName + "_" + str(coordinate2D.x) + "_" + str(coordinate2D.y)
+		newLocation.name = structure.id + "_" + str(coordinate2D.x) + "_" + str(coordinate2D.y)
 		
 		var sprite3D = newLocation.get_node("Sprite3D")
 		var collisionBox3D = newLocation.get_node("CollisionShape3D")
-		
-		if locationsTextures.has(locationName):
-			sprite3D.texture = locationsTextures[locationName]
+				
+		sprite3D.texture = structure.texture
 			
 		if sprite3D.texture != null:
 			var imageWidth = sprite3D.texture.get_width()

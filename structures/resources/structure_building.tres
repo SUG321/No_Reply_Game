@@ -9,6 +9,7 @@ id = "building"
 displayName = "Edificio"
 texture = ExtResource("2_hjl0a")
 spawnWeight = 50
+solid = true
 lootAmount = 60
 lootLimit = 15
 metadata/_custom_type_script = "uid://dc5we5fto5b4j"

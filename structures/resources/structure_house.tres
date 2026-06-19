@@ -9,4 +9,5 @@ id = "house"
 displayName = "Casa"
 texture = ExtResource("2_tp6s8")
 spawnWeight = 25
+solid = true
 metadata/_custom_type_script = "uid://dc5we5fto5b4j"
