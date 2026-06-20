@@ -1,6 +1,7 @@
+# Database.gd
 extends Node
 
-var structures: Dictionary = {
+var structures: Dictionary[String, StructureData] = {
 	"bulding": preload("res://structures/resources/structure_building.tres"),
 	"house": preload("res://structures/resources/structure_house.tres"),
 	"house_boarded": preload("res://structures/resources/structure_house_boarded.tres"),
@@ -11,7 +12,7 @@ var structures: Dictionary = {
 	"Null": preload("res://structures/resources/structure_Null.tres")
 }
 
-var items: Dictionary = {
+var items: Dictionary[String, ItemData] = {
 	"trash": preload("res://items/resources/item_trash.tres"),
 	"components": preload("res://items/resources/item_components.tres"),
 	"metal": preload("res://items/resources/item_metal.tres"),

@@ -1,25 +1,25 @@
-class_name Generator
-extends RefCounted
+# generator.gd
+class_name Generator extends RefCounted
 
 # MAQUINAS
-var rng :RandomNumberGenerator = RandomNumberGenerator.new()
-var noise :FastNoiseLite = FastNoiseLite.new()
+var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var noise: FastNoiseLite = FastNoiseLite.new()
 
 # ESCENAS
-var locationScene :PackedScene = preload("res://structures/structure.tscn")
+var locationScene: PackedScene = preload("res://structures/structure.tscn")
 
 # Variables
-var mapWidth :int = 10 # X
-var mapDepth :int = 10 # Z
-var map :Dictionary = {}
+var mapWidth: int = 10 # X
+var mapDepth: int = 10 # Z
+var map: Dictionary[Vector2, MapCell] = {}
 
 # DICCIONARIOS
-var structures :Dictionary = Database.structures # Estructuras
-var items :Dictionary = Database.items # Objetos
+var structures: Dictionary = Database.structures # Estructuras
+var items: Dictionary = Database.items # Objetos
 
 # FUNCIONES DE MAPA
 func Generate(Seed: String, world: Node3D) -> void:
-	var _Seed = Seed.hash()
+	var _Seed: int = Seed.hash()
 	rng.seed = _Seed
 	noise.seed = _Seed
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
@@ -35,14 +35,14 @@ func Generate_Heat_Map(width: int, height: int):
 	if Config.depuration>= 2: print("\n[generator.gd/Generate_Heat_Map]: ...INIT GEN MAPA")
 	# FIN DEPURACION -----------------------------------------
 	map.clear()
-	var uniquePositions = {}
+	var uniquePositions: Dictionary = {}
 	
 	for y in range(height):
-		var fila = ""
+		var fila: String = ""
 		for x in range(width):
-			var value = noise.get_noise_2d(x, y)
-			var cellBudget = 0
-			var icon = ""
+			var value: float = noise.get_noise_2d(x, y)
+			var cellBudget: int = 0
+			var icon: String = ""
 			
 			if value > 0.3:
 				cellBudget = 80
@@ -59,13 +59,13 @@ func Generate_Heat_Map(width: int, height: int):
 			
 			fila += icon
 			
-			var generatedStructures = Generate_Entities(cellBudget, structures)
+			var generatedStructures: Array[Item_Structure] = Generate_Entities(cellBudget, structures)
 			if generatedStructures.size() > 0:
-				var principalStructure = generatedStructures[0]
-				var locationName = principalStructure.id
+				var principalStructure: Item_Structure = generatedStructures[0]
+				var locationName: String = principalStructure.id
 				
 				if locationName != "Null":
-					var minimumDistance = 0
+					var minimumDistance: int = 0
 					
 					if locationName == "well":
 						minimumDistance = 20
@@ -76,7 +76,7 @@ func Generate_Heat_Map(width: int, height: int):
 					elif locationName == "house_boarded":
 						minimumDistance = 20
 					
-					var veryClose = false
+					var veryClose: bool = false
 					if minimumDistance > 0:
 						if uniquePositions.has(locationName):
 							for position in uniquePositions[locationName]:
@@ -93,21 +93,22 @@ func Generate_Heat_Map(width: int, height: int):
 							uniquePositions[locationName].append(Vector2(x, y))
 				
 				if locationName != "Null":
-					var generatedObjects = Generate_Entities(principalStructure.lootAmount, items)
-					var lootList = []
+					var generatedObjects: Array[Item_Structure] = Generate_Entities(principalStructure.lootAmount, items)
+					var lootList: Array[ItemData] = []
 					for object in generatedObjects:
 						lootList.append(object)
-					map[Vector2(x, y)] = {
-						"structure": principalStructure,
-						"loot": lootList
-					}
+					
+					var newCell = MapCell.new()
+					newCell.structure = principalStructure
+					newCell.loot.assign(lootList)
+					map[Vector2(x, y)] = newCell
 		# DEPURACION ---------------------------------------------
 		if Config.depuration >= 2: print(fila)
 		# FIN DEPURACION ----------------------------------------- 
 	
 	# DEPURACION ---------------------------------------------
 	if Config.depuration >= 1: 
-		var totalCells = width * height
+		var totalCells: int = width * height
 		print("\n[generator.gd/Generate_Heat_Map]: --- REPORTE DEL MAPA DE CALOR ---")
 		print("- Dimensiones: ", width, "x", height)
 		print("- Total de celdas analizadas: ", totalCells)
@@ -115,33 +116,33 @@ func Generate_Heat_Map(width: int, height: int):
 		print("--------------------------------------------------")
 	# FIN DEPURACION -----------------------------------------
 
-func Generate_Entities(budget: int, dictionary: Dictionary) -> Array:
-	var totalWeight = 0
-	var _Selection = []
+func Generate_Entities(budget: int, dictionary: Dictionary) -> Array[Item_Structure]:
+	var totalWeight: int = 0
+	var _Selection: Array[Item_Structure] = []
 	
 	for entity in dictionary:
 		totalWeight += dictionary[entity].spawnWeight
 			
 	while budget > 0:
-		var roll = rng.randi_range(1, totalWeight)
-		var temporalStructure = {}
+		var roll: int = rng.randi_range(1, totalWeight)
+		var temporalEntity: Item_Structure
 		
 		for entity in dictionary:
 			roll -= dictionary[entity].spawnWeight
 			if roll <= 0:
-				temporalStructure = dictionary[entity];	
+				temporalEntity = dictionary[entity];	
 				break;
 		
-		if temporalStructure.spawnWeight <= budget:
-			var structure = temporalStructure;
+		if temporalEntity.spawnWeight <= budget:
+			var entity: Item_Structure = temporalEntity;
 			
-			if structure.id == "Null":
+			if entity.id == "Null":
 				budget = 0;
 			
-			budget -= structure.spawnWeight;
-			_Selection.append(structure);
+			budget -= entity.spawnWeight;
+			_Selection.append(entity);
 		else:
-			break;
+			break; # PONER CONTINUE EN CASO DE QUERER SEGUIR GENERANDO OBJETOS (IGNORAR "NADA") (PUEDE GENERAR ERRORES)
 	return _Selection;
 
 func Generate_3D_World(world: Node3D) -> void:
@@ -152,29 +153,29 @@ func Generate_3D_World(world: Node3D) -> void:
 	# FIN DEPURACION ----------------------------------------- 
 	
 	for coordinate2D in map.keys():
-		var locationData = map[coordinate2D]
-		var structure = locationData["structure"]
+		var locationData: MapCell = map[coordinate2D]
+		var structure: StructureData = locationData.structure
 		
-		var newLocation = locationScene.instantiate()
+		var newLocation: Node3D = locationScene.instantiate()
 		newLocation.structureType = structure.id
-		newLocation.inventory = locationData["loot"]
+		newLocation.Set_Loot(locationData.loot)
 		newLocation.name = structure.id + "_" + str(coordinate2D.x) + "_" + str(coordinate2D.y)
 		
-		var sprite3D = newLocation.get_node("Sprite3D")
-		var collisionBox3D = newLocation.get_node("CollisionShape3D")
+		var sprite3D: Sprite3D = newLocation.get_node("Sprite3D")
+		var collisionBox3D: CollisionShape3D = newLocation.get_node("CollisionShape3D")
 				
 		sprite3D.texture = structure.texture
 			
 		if sprite3D.texture != null:
-			var imageWidth = sprite3D.texture.get_width()
-			var imageHeight = sprite3D.texture.get_height()
+			var imageWidth: float = sprite3D.texture.get_width()
+			var imageHeight: float = sprite3D.texture.get_height()
 			
-			var newPixelSize = Config.cellSize / float(imageWidth)
+			var newPixelSize: float = Config.cellSize / float(imageWidth)
 			sprite3D.pixel_size = newPixelSize # TAMAÑO DE LA IMAGEN
 			
-			var physicHeight = imageHeight * newPixelSize
+			var physicHeight: float = imageHeight * newPixelSize
 			
-			var boxShape = BoxShape3D.new()
+			var boxShape: BoxShape3D = BoxShape3D.new()
 			boxShape.size = Vector3(Config.cellSize, physicHeight, Config.cellSize)
 			
 			collisionBox3D.shape = boxShape
@@ -182,7 +183,7 @@ func Generate_3D_World(world: Node3D) -> void:
 		# CAMBIO DE COORDENADAS 2D a 3D
 		# X 2D = X 3D.
 		# Y 2D = Z 3D.
-		var position3d = Vector3(
+		var position3d: Vector3 = Vector3(
 			coordinate2D.x * Config.cellSize, 
 			0, # Y 3D = 0 (Suelo)
 			coordinate2D.y * Config.cellSize

@@ -1,3 +1,4 @@
+# map.gd
 extends Node3D
 
 # EXPORTS
@@ -16,8 +17,8 @@ func _ready() -> void:
 	actionsMenu.on_navigate_requested.connect(_process_movement) # CLIC EN EL BOTON "IR AQUI" DEL MENU DE ACCIONES
 
 # FUNCIONES DE ASTARGRID
-func Initialize_Navigation(map: Dictionary , width: int, height: int) -> void:
-	var numberOfSolids = 0 # DEPURACION
+func Initialize_Navigation(map: Dictionary[Vector2, MapCell], width: int, height: int) -> void:
+	var numberOfSolids: int = 0 # DEPURACION
 	
 	astarGrid = AStarGrid2D.new()
 	
@@ -28,7 +29,7 @@ func Initialize_Navigation(map: Dictionary , width: int, height: int) -> void:
 	astarGrid.update()
 	
 	for cell in map:
-		var structure = map[cell]["structure"]
+		var structure: StructureData = map[cell].structure
 		
 		if structure.solid == true:
 			astarGrid.set_point_solid(cell, true)
@@ -38,7 +39,7 @@ func Initialize_Navigation(map: Dictionary , width: int, height: int) -> void:
 	human.solidStructures = solidStructures
 	
 	# POR SI EL JUGADOR SE GENERA EN UN OBJETO SOLIDO
-	var securePositionFound = false
+	var securePositionFound: bool = false
 	
 	for x in range(width):
 		for y in range(height):
@@ -58,7 +59,7 @@ func Initialize_Navigation(map: Dictionary , width: int, height: int) -> void:
 	
 	# DEPURACION ---------------------------------------------
 	if Config.depuration >= 1: 
-		var total_celdas_grid = width * height
+		var total_celdas_grid: float = width * height
 		print("\n[map.gd/Initialize_Navigation]: --- REPORTE DE ASTARGRID ---")
 		print("- Dimensiones de la cuadrícula: ", width, "x", height)
 		print("- Celdas totales de navegación: ", total_celdas_grid)
@@ -76,14 +77,14 @@ func Get_Route(start: Vector2i, end: Vector2i) -> Array[Vector2i]:
 			Utilities.Print_Message("La estructura esta rodeada imposible llegar...")
 			return []
 	
-	var route = astarGrid.get_id_path(start, end)
+	var route: Array[Vector2i] = astarGrid.get_id_path(start, end)
 	if route.size() == 0:
 		Utilities.Print_Message("Imposible de llegar...")
 	
 	return route
 
 func Get_Free_Adyacent_Cell(targetCell: Vector2i, actualPlayerCell: Vector2i) -> Vector2i:
-	var directions = [
+	var directions: Array[Vector2i] = [
 		Vector2i(0, 1),		# ABAJO
 		Vector2i(0, -1),	# ARRIBA
 		Vector2i(1, 0),		# DERECHA
@@ -94,15 +95,15 @@ func Get_Free_Adyacent_Cell(targetCell: Vector2i, actualPlayerCell: Vector2i) ->
 		#Vector2i(-1, -1)	# ESQUINA SUPERIOR IZQUIERDA
 	]
 	
-	var bestCell = targetCell
-	var minimumDistance = INF
+	var bestCell: Vector2i = targetCell
+	var minimumDistance: float = INF
 	
-	var foundCell = false
+	var foundCell: bool = false
 	for direction in directions:
-		var nearbyCell = targetCell + direction
+		var nearbyCell: Vector2i = targetCell + direction
 		
 		if astarGrid.is_in_boundsv(nearbyCell) and not astarGrid.is_point_solid(nearbyCell):
-			var distance = actualPlayerCell.distance_to(nearbyCell)
+			var distance: float = actualPlayerCell.distance_to(nearbyCell)
 			
 			if distance < minimumDistance:
 				minimumDistance = distance
@@ -117,7 +118,7 @@ func Get_Free_Adyacent_Cell(targetCell: Vector2i, actualPlayerCell: Vector2i) ->
 # FUNCIONES DE SEÑALES
 
 func _process_movement(targetPosition3D: Vector3) -> void:
-	var destinyCell = Vector2i(
+	var destinyCell: Vector2i = Vector2i(
 		round(targetPosition3D.x / Config.cellSize),
 		round(targetPosition3D.z / Config.cellSize)
 	)
@@ -127,12 +128,12 @@ func _process_movement(targetPosition3D: Vector3) -> void:
 			Utilities.Print_Message("El lugar al que intentas ir está fuera de los límites del mapa.")
 			return
 
-		var cellStart = Vector2i(
+		var cellStart: Vector2i = Vector2i(
 			round(human.global_position.x / Config.cellSize),
 			round(human.global_position.z / Config.cellSize)
 		)
 		
-		var route = Get_Route(cellStart, destinyCell)
+		var route: Array[Vector2i] = Get_Route(cellStart, destinyCell)
 		human.Follow_Route(route)
 		
 		# DEPURACION ---------------------------------------------

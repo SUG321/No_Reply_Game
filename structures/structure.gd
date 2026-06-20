@@ -1,10 +1,17 @@
 # Structure.gd
-
-extends Area3D
-class_name Structure
+class_name Structure extends Area3D
 
 var structureType: String = ""
-var inventory: Array = []
+var inventoryData: Inventory
 
-func Take_Item(_itemIndex: int):
-	pass
+func _ready() -> void:
+	if inventoryData == null:
+		inventoryData = Inventory.new()
+		inventoryData.canGetItems = false # ESTRUCTURA NO GUARDA
+
+func Set_Loot(lootArray: Array) -> void:
+	if inventoryData == null:
+		inventoryData = Inventory.new()
+		inventoryData.canGetItems = false
+	
+	inventoryData.items = lootArray

@@ -1,6 +1,5 @@
-# StructureData.gd
-class_name StructureData
-extends Resource
+# structure_data.gd
+class_name StructureData extends Item_Structure
 
 @export var id: String = ""
 @export var displayName: String = ""

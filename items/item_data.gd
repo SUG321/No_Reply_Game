@@ -1,6 +1,5 @@
-# ItemData.gd
-class_name ItemData
-extends Resource
+# item_data.gd
+class_name ItemData extends Item_Structure
 
 @export var id: String = "" # "trash", "weapon", ...
 @export var displayName: String = "" # "Chatarra", "Arma", ...

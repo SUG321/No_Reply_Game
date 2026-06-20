@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://c8a2u5iwtgx1c" path="res://world/map.gd" id="1_oy330"]
 [ext_resource type="PackedScene" uid="uid://bmne7y47eryae" path="res://entities/human/human.tscn" id="2_h3xdr"]
 [ext_resource type="PackedScene" uid="uid://dow1vlcowe1gk" path="res://ui/actions_menu/actions_menu.tscn" id="4_1s1bm"]
+[ext_resource type="PackedScene" uid="uid://ucoyd1xr227k" path="res://ui/inventory/inventory.tscn" id="5_sc4t8"]
 [ext_resource type="Script" uid="uid://bgs7d1n25grla" path="res://world/cursor.gd" id="6_bxodh"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bxodh"]
@@ -47,7 +48,7 @@ follow_viewport_enabled = true
 offset_left = 5.0
 offset_top = 5.0
 offset_right = 425.0
-offset_bottom = 248.0
+offset_bottom = 717.0
 size_flags_vertical = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="UI/LeftPanel" unique_id=768619098]
@@ -57,9 +58,16 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="generator" parent="UI/LeftPanel/MarginContainer" unique_id=1573440576 node_paths=PackedStringArray("map3D") instance=ExtResource("1_8vy5w")]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/LeftPanel/MarginContainer" unique_id=235026206]
 layout_mode = 2
-map3D = NodePath("../../../../Map")
+theme_override_constants/separation = 10
+
+[node name="generator" parent="UI/LeftPanel/MarginContainer/VBoxContainer" unique_id=1573440576 node_paths=PackedStringArray("map3D") instance=ExtResource("1_8vy5w")]
+layout_mode = 2
+map3D = NodePath("../../../../../Map")
+
+[node name="Inventory" parent="UI/LeftPanel/MarginContainer/VBoxContainer" unique_id=1755014037 instance=ExtResource("5_sc4t8")]
+layout_mode = 2
 
 [node name="ActionsMenu" parent="UI" unique_id=222244645 node_paths=PackedStringArray("mouseController") instance=ExtResource("4_1s1bm")]
 offset_left = 5.0

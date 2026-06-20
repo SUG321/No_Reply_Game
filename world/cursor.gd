@@ -1,3 +1,4 @@
+# cursor.gd
 extends MeshInstance3D
 
 # EXPORTS
@@ -18,11 +19,11 @@ func _ready() -> void:
 		mouseController.on_mouse_motion.connect(_on_mouse_motion)
 
 func _on_mouse_motion(mousePosition: Vector3) -> void:
-	var cellX = round(mousePosition.x / Config.cellSize)
-	var cellZ = round(mousePosition.z / Config.cellSize)
+	var cellX: float = round(mousePosition.x / Config.cellSize)
+	var cellZ: float = round(mousePosition.z / Config.cellSize)
 	
-	var cellCenterX = cellX * Config.cellSize
-	var cellCenterZ = cellZ * Config.cellSize
+	var cellCenterX: float = cellX * Config.cellSize
+	var cellCenterZ: float = cellZ * Config.cellSize
 	
 	global_position = Vector3 (cellCenterX, 0, cellCenterZ)
 

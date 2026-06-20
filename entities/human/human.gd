@@ -1,10 +1,17 @@
-class_name Human
-extends Node3D
+# human.gd
+class_name Human extends Node3D
+
+# EXPORTS
+@export var inventoryData: Inventory
 
 # VARIABLES
 var actualRoute :Array[Vector2i] = []
 var movementVelocity :float = 6.0
 var solidStructures: Array[Vector2i]
+
+func _ready() -> void:
+	if inventoryData == null:
+		inventoryData = Inventory.new()
 
 func Follow_Route(newRoute :Array[Vector2i]) -> void:
 	if newRoute.size() != 0:
@@ -21,8 +28,8 @@ func Follow_Route(newRoute :Array[Vector2i]) -> void:
 
 func _physics_process(delta :float) -> void:
 	if actualRoute.size() > 0:
-		var nextCell = actualRoute[0]
-		var destinationPosition = Vector3(
+		var nextCell: Vector2i = actualRoute[0]
+		var destinationPosition: Vector3 = Vector3(
 			nextCell.x * Config.cellSize,
 			global_position.y,
 			nextCell.y * Config.cellSize

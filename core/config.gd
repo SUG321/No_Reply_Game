@@ -1,3 +1,4 @@
+# Config.gd
 extends Node
 
 # VARIABLES GLOBALES

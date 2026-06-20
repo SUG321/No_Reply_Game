@@ -1,5 +1,5 @@
-extends Camera3D
-class_name MouseController
+# mouse_controller.gd
+class_name MouseController extends Camera3D
 
 # SEÑALES
 signal on_click()
@@ -12,14 +12,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		Raycast_2D(event)
 
 func Raycast_2D(event: InputEvent) -> void:
-	var mousePosition = event.position
+	var mousePosition: Vector2 = event.position
 	
-	var rayOrigin = project_ray_origin(mousePosition)
-	var rayDirection = project_ray_normal(mousePosition)
+	var rayOrigin: Vector3 = project_ray_origin(mousePosition)
+	var rayDirection: Vector3 = project_ray_normal(mousePosition)
 	
 	if event is InputEventMouseMotion:
-		var plane = Plane(Vector3.UP, 0.0)
-		var intersectionPoint = plane.intersects_ray(rayOrigin, rayDirection)
+		var plane: Plane = Plane(Vector3.UP, 0.0)
+		var intersectionPoint: Vector3 = plane.intersects_ray(rayOrigin, rayDirection)
 		
 		if intersectionPoint != null:
 			on_mouse_motion.emit(intersectionPoint)
@@ -31,24 +31,24 @@ func Raycast_2D(event: InputEvent) -> void:
 		if Raycast_3D(rayOrigin, rayDirection):
 			return
 		
-		var plane = Plane(Vector3.UP, 0.0)
-		var intersectionPoint = plane.intersects_ray(rayOrigin, rayDirection)
+		var plane: Plane = Plane(Vector3.UP, 0.0)
+		var intersectionPoint: Vector3 = plane.intersects_ray(rayOrigin, rayDirection)
 		
 		if intersectionPoint != null:
 			on_ground_clicked.emit(intersectionPoint)
 	# FINAL RAYCAST 3D -------------------------
 
 func Raycast_3D(rayOrigin: Vector3, rayDirection: Vector3) -> bool:
-	var spaceState = get_world_3d().direct_space_state
-	var rayEnd = rayOrigin + rayDirection * 2000.0
-	var query = PhysicsRayQueryParameters3D.create(rayOrigin, rayEnd)
+	var spaceState: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
+	var rayEnd: Vector3 = rayOrigin + rayDirection * 2000.0
+	var query: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(rayOrigin, rayEnd)
 	query.collide_with_areas = true
 	
-	var result = spaceState.intersect_ray(query)
+	var result: Dictionary = spaceState.intersect_ray(query)
 	
 	if result and result.collider.is_in_group("structures"):
-		var collidedObject = result.collider
-		var position2D = unproject_position(collidedObject.global_position)
+		var collidedObject: Structure = result.collider
+		var position2D: Vector2 = unproject_position(collidedObject.global_position)
 		
 		on_structure_clicked.emit(collidedObject, position2D)
 		return true

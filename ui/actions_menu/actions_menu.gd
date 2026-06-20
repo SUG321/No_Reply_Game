@@ -1,6 +1,5 @@
 # actions_menu.gd
-extends PanelContainer
-class_name ActionsMenu
+class_name ActionsMenu extends PanelContainer
 
 # SEÑALES
 signal on_navigate_requested(targetPosition3D: Vector3)
@@ -37,8 +36,9 @@ func _on_go_button_pressed() -> void:
 	on_navigate_requested.emit(structureTargetPosition)
 	hide()
 func _on_button_loot_pressed() -> void:
-	var completeLoot: Array = []
-	for loot in currentStructure.inventory:
+	var completeLoot: Array[String] = []
+	
+	for loot in currentStructure.inventoryData.items:
 		completeLoot.append(loot.displayName)
 	
 	Utilities.Print_Message("Abriendo Inventario de: " + structureType + ". Contiene: " + str(completeLoot))

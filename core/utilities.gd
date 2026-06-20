@@ -1,3 +1,4 @@
+# Utilities.gd
 extends Node
 
 signal signalMessage
