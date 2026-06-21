@@ -5,22 +5,23 @@ signal transfer_requested(itemIdex: int, sourceInventory: Inventory)
 
 # EXPORTS
 @export var titleLabel: Label
-@export var getItemButton: Button
-@export var dropItemButton: Button
+@export var transferItemButton: Button
 @export var itemGrid: GridContainer
 @export var inventorySlot: PackedScene
 
 # VARIABLES
 var currentInventory: Inventory
+var currentIndex: int = 0
+
+func _ready() -> void:
+	transferItemButton.pressed.connect(_on_transfer_item_button_pressed)
 
 func loadInventory(newInventory: Inventory) -> void:
 	titleLabel.text = name
 	currentInventory = newInventory
 	
-	if newInventory.canGetItems != false:
-		getItemButton.show()
-	if newInventory.canDropItems != false:
-		dropItemButton.show()
+	if newInventory.canTransferItems != false:
+		transferItemButton.show()
 	
 	Refresh_UI()
 
@@ -44,4 +45,9 @@ func Refresh_UI() -> void:
 
 # FUNCIONES SEÑALES
 func _on_slot_clicked(clickedIndex: int) -> void:
-	transfer_requested.emit(clickedIndex, currentInventory)
+	currentIndex = clickedIndex
+	transferItemButton.disabled = false
+
+func _on_transfer_item_button_pressed() -> void:
+	transfer_requested.emit(currentIndex, currentInventory)
+	transferItemButton.disabled = true

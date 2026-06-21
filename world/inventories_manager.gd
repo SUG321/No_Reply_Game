@@ -33,7 +33,7 @@ func _on_transfer_requested(itemIndex: int, sourceInventory: Inventory) -> void:
 	else:
 		targetInventory = humanInventoryUI.currentInventory
 	
-	if not sourceInventory.canDropItems or not targetInventory.canGetItems:
+	if not sourceInventory.canTransferItems:
 		Utilities.Print_Message("Accion no permitida (como lograste eso?...)")
 		return
 	

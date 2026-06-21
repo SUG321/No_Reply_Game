@@ -12,6 +12,6 @@ func _ready() -> void:
 func Set_Loot(lootArray: Array) -> void:
 	if inventoryData == null:
 		inventoryData = Inventory.new()
-		inventoryData.canGetItems = false
+		inventoryData.canTransferItems = true
 	
 	inventoryData.items = lootArray

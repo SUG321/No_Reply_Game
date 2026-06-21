@@ -14,13 +14,12 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
-[node name="Inventory" type="PanelContainer" unique_id=1755014037 node_paths=PackedStringArray("titleLabel", "getItemButton", "dropItemButton", "itemGrid")]
+[node name="Inventory" type="PanelContainer" unique_id=1755014037 node_paths=PackedStringArray("titleLabel", "transferItemButton", "itemGrid")]
 offset_right = 139.0
 offset_bottom = 55.0
 script = ExtResource("1_t68fq")
 titleLabel = NodePath("VBoxContainer/Label")
-getItemButton = NodePath("VBoxContainer/MarginContainer/VBoxContainer/ButtonContainer/GetItem")
-dropItemButton = NodePath("VBoxContainer/MarginContainer/VBoxContainer/ButtonContainer/DropItem")
+transferItemButton = NodePath("VBoxContainer/MarginContainer/VBoxContainer/ButtonContainer/TransferItemButton")
 itemGrid = NodePath("VBoxContainer/MarginContainer/VBoxContainer/ItemContainer/GridContainer")
 inventorySlot = ExtResource("2_s83yu")
 
@@ -56,16 +55,9 @@ columns = 4
 [node name="ButtonContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer" unique_id=1089621662]
 layout_mode = 2
 
-[node name="DropItem" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/ButtonContainer" unique_id=670543834]
+[node name="TransferItemButton" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/ButtonContainer" unique_id=670543834]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 disabled = true
-text = "Recoger"
-
-[node name="GetItem" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/ButtonContainer" unique_id=1354701058]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-disabled = true
-text = "Soltar"
+text = "Transferir"
