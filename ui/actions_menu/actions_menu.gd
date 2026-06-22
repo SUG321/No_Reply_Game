@@ -48,21 +48,26 @@ func _on_button_loot_pressed() -> void:
 		Utilities.Print_Message("Ya se esta looteando una estructura. Espera a que termine.")
 		return
 	
-	isLooting = mapLogic.Request_Movement(structureTargetPosition)
-	
-	if !isLooting:
+	if not mapLogic.Request_Movement(structureTargetPosition):
 		return
 	
+	isLooting = true
 	await human.on_path_ended
 	
+	if not isLooting:
+		return
+	
+	Utilities.Print_Message("Saqueando " + structureName + "...")
 	lootTimer.start(3)
-	Utilities.Print_Message("Saqueando...")
 	await lootTimer.timeout
+	
+	if not isLooting:
+		return
 	
 	inventoriesManager.Clear_Structure_Inventory()
 	inventoriesManager.Show_Human_Inventory()
-	
 	inventoriesManager.New_Inventory(structureName, currentStructure.inventoryData)
+	Utilities.Print_Message("Mostrando contenido de: " + structureName)
 	isLooting = false
 
 func _on_structure_clicked(structure: Node3D, screenPosition: Vector2) -> void:
@@ -71,5 +76,11 @@ func _on_structure_clicked(structure: Node3D, screenPosition: Vector2) -> void:
 	
 func _on_click() -> void:
 	hide()
+	
+	isLooting = false
+	if not lootTimer.is_stopped():
+		lootTimer.stop()
+		Utilities.Print_Message("Saqueo Cancelado.")
+	
 	inventoriesManager.Hide_Human_Inventory()
 	inventoriesManager.Clear_Structure_Inventory()
