@@ -84,30 +84,25 @@ func Get_Free_Adyacent_Cell(targetCell: Vector2i, actualPlayerCell: Vector2i) ->
 		Vector2i(0, -1),	# ARRIBA
 		Vector2i(1, 0),		# DERECHA
 		Vector2i(-1, 0)		# IZQUIERDA
-		#Vector2i(1, 1),	# ESQUINA INFERIOR DERECHA
-		#Vector2i(1, -1),	# ESQUINA SUPERIOR DERECHA
-		#Vector2i(-1, 1),	# ESQUINA INFERIOR IZQUIERDA
-		#Vector2i(-1, -1)	# ESQUINA SUPERIOR IZQUIERDA
 	]
 	
 	var bestCell: Vector2i = targetCell
-	var minimumDistance: float = INF
-	
+	var shortestPathSize: int = 999999
 	var foundCell: bool = false
+	
 	for direction in directions:
 		var nearbyCell: Vector2i = targetCell + direction
 		
 		if astarGrid.is_in_boundsv(nearbyCell) and not astarGrid.is_point_solid(nearbyCell):
-			var distance: float = actualPlayerCell.distance_to(nearbyCell)
 			var route: Array[Vector2i] = astarGrid.get_id_path(actualPlayerCell, nearbyCell)
 			
-			if route.size() == 0:
-				distance = INF
-			
-			if distance < minimumDistance:
-				minimumDistance = distance
-				bestCell = nearbyCell
-				foundCell = true
+			if route.size() > 0:
+				var currentPathLength: int = route.size()
+				
+				if currentPathLength < shortestPathSize:
+					shortestPathSize = currentPathLength
+					bestCell = nearbyCell
+					foundCell = true
 			
 	if foundCell:
 		return bestCell
