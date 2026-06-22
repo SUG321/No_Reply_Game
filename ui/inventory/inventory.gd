@@ -13,6 +13,9 @@ signal transfer_requested(itemIdex: int, sourceInventory: Inventory)
 var currentInventory: Inventory
 var currentIndex: int = 0
 
+var currentPulseTween: Tween
+var activeSlot: Control
+
 func _ready() -> void:
 	transferItemButton.pressed.connect(_on_transfer_item_button_pressed)
 
@@ -26,9 +29,10 @@ func loadInventory(newInventory: Inventory) -> void:
 	Refresh_UI()
 
 func Refresh_UI() -> void:
-	for child in itemGrid.get_children():
-		if child.is_in_group("InventorySlot"):
-			child.queue_free()
+	if activeSlot:
+		Utilities.Stop_Pulse_UI(activeSlot, currentPulseTween)
+	
+	Utilities.Clear_Childs(itemGrid, "InventorySlot")
 	
 	var index: int = 0
 	for item: ItemData in currentInventory.items:
@@ -47,7 +51,21 @@ func Refresh_UI() -> void:
 func _on_slot_clicked(clickedIndex: int) -> void:
 	currentIndex = clickedIndex
 	transferItemButton.disabled = false
+	
+	if activeSlot:
+		Utilities.Stop_Pulse_UI(activeSlot, currentPulseTween)
+	activeSlot = itemGrid.get_child(clickedIndex)
+	
+	Utilities.Start_Pulse_UI(activeSlot, 0.4)
 
 func _on_transfer_item_button_pressed() -> void:
 	transfer_requested.emit(currentIndex, currentInventory)
+	transferItemButton.disabled = true
+	
+	Utilities.Stop_Pulse_UI(activeSlot, currentPulseTween)
+
+# FUNCIONES UTILIDAD
+func Restart_Select() -> void:
+	if activeSlot:
+		Utilities.Stop_Pulse_UI(activeSlot, currentPulseTween)
 	transferItemButton.disabled = true

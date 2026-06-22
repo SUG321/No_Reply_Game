@@ -48,6 +48,7 @@ func _on_transfer_requested(itemIndex: int, sourceInventory: Inventory) -> void:
 # FUNCIONES DE UTILIDAD
 func Hide_Human_Inventory() -> void:
 	if is_instance_valid(humanInventoryUI):
+		humanInventoryUI.Restart_Select()
 		humanInventoryUI.hide()
 
 func Show_Human_Inventory() -> void:
