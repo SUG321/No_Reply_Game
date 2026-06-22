@@ -64,14 +64,15 @@ func Initialize_Navigation(map: Dictionary[Vector2, MapCell], width: int, height
 
 func Get_Route(start: Vector2i, end: Vector2i) -> Array[Vector2i]:
 	if astarGrid.is_point_solid(end):
-		Utilities.Print_Message("Estructura detectada. Caminando...")
 		end = Get_Free_Adyacent_Cell(end, start)
-		
 		if astarGrid.is_point_solid(end):
 			Utilities.Print_Message("La estructura esta rodeada imposible llegar...")
 			return []
 	
 	var route: Array[Vector2i] = astarGrid.get_id_path(start, end)
+	
+	Utilities.Print_Message("Estructura detectada. Caminando...")
+	
 	if route.size() == 0:
 		Utilities.Print_Message("Imposible de llegar...")
 	
@@ -98,12 +99,16 @@ func Get_Free_Adyacent_Cell(targetCell: Vector2i, actualPlayerCell: Vector2i) ->
 		
 		if astarGrid.is_in_boundsv(nearbyCell) and not astarGrid.is_point_solid(nearbyCell):
 			var distance: float = actualPlayerCell.distance_to(nearbyCell)
+			var route: Array[Vector2i] = astarGrid.get_id_path(actualPlayerCell, nearbyCell)
+			
+			if route.size() == 0:
+				distance = INF
 			
 			if distance < minimumDistance:
 				minimumDistance = distance
 				bestCell = nearbyCell
 				foundCell = true
-				
+			
 	if foundCell:
 		return bestCell
 	else:
